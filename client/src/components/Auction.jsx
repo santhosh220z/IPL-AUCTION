@@ -1,0 +1,483 @@
+import { useEffect, useMemo, useState } from 'react';
+import { formatLakh } from '../../../shared/constants.js';
+import {
+  formatNumber,
+  nationalityLabel,
+  pluralize,
+  roleLabel,
+} from '../lib/format.js';
+import { Button, Dialog, EmptyState, TeamMark } from './ui.jsx';
+
+function useLotClock(auction, timer) {
+  const [now, setNow] = useState(Date.now());
+  const [base, setBase] = useState({
+    remainingMs: auction?.remainingMs ?? 0,
+    at: Date.now(),
+  });
+
+  useEffect(() => {
+    const interval = setInterval(() => setNow(Date.now()), 100);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    if (!auction) return;
+    setBase({ remainingMs: auction.remainingMs, at: Date.now() });
+  }, [auction?.remainingMs, auction?.phase, auction?.paused, auction?.current?.player?.id]);
+
+  useEffect(() => {
+    if (!timer) return;
+    setBase({ remainingMs: timer.remainingMs, at: timer.at });
+  }, [timer]);
+
+  if (!auction) return 0;
+  if (auction.paused) return auction.remainingMs;
+  if (auction.phase !== 'open') return 0;
+  return Math.max(0, base.remainingMs - (now - base.at));
+}
+
+function PlayerStats({ current }) {
+  const stats = current?.stats;
+  const player = current?.player;
+  if (!stats || !player) return null;
+
+  if (!stats.matches) {
+    return (
+      <p className="lot-note">
+        No IPL deliveries in this dataset. The rating is a prior, so this is a projection.
+      </p>
+    );
+  }
+
+  const batting = stats.batting;
+  const bowling = stats.bowling;
+  const showBatting = player.role === 'Batter' || player.role === 'WK-Batter' || player.role === 'All-rounder';
+  const showBowling = player.role === 'Bowler' || player.role === 'All-rounder';
+
+  return (
+    <dl className="lot-stats">
+      {showBatting ? (
+        <>
+          <div>
+            <dt>Runs</dt>
+            <dd>{batting.runs}</dd>
+          </div>
+          <div>
+            <dt>Strike rate</dt>
+            <dd>{formatNumber(batting.strikeRate)}</dd>
+          </div>
+          <div>
+            <dt>Average</dt>
+            <dd>{formatNumber(batting.average)}</dd>
+          </div>
+        </>
+      ) : null}
+      {showBowling ? (
+        <>
+          <div>
+            <dt>Wickets</dt>
+            <dd>{bowling.wickets}</dd>
+          </div>
+          <div>
+            <dt>Economy</dt>
+            <dd>{formatNumber(bowling.economy, 2)}</dd>
+          </div>
+          {player.role === 'All-rounder' ? (
+            <div>
+              <dt>Matches</dt>
+              <dd>{stats.matches}</dd>
+            </div>
+          ) : null}
+        </>
+      ) : null}
+    </dl>
+  );
+}
+
+function SquadDialog({ team, onClose }) {
+  if (!team) return null;
+  const spent = team.squad.reduce((sum, player) => sum + player.priceLakh, 0);
+  return (
+    <Dialog open title={`${team.teamName} squad`} onClose={onClose} wide>
+      <div className="squad-summary">
+        <p>
+          {team.squadCount} {pluralize(team.squadCount, 'player')} bought · {formatLakh(spent)} spent ·{' '}
+          {formatLakh(team.purseLakh)} left
+        </p>
+        <p>
+          {team.overseasCount} overseas. Squad limit is 25, with 8 overseas.
+        </p>
+      </div>
+      {team.squad.length === 0 ? (
+        <EmptyState title="No players yet.">This team has not won a lot.</EmptyState>
+      ) : (
+        <div className="table-wrap">
+          <table className="data-table">
+            <caption className="visually-hidden">Players bought by {team.teamName}</caption>
+            <thead>
+              <tr>
+                <th scope="col">Player</th>
+                <th scope="col">Role</th>
+                <th scope="col" className="numeric">
+                  Rating
+                </th>
+                <th scope="col" className="numeric">
+                  Price
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {team.squad.map((player) => (
+                <tr key={player.playerId}>
+                  <td>
+                    {player.name}
+                    {player.overseas ? <span className="cell-note">Overseas</span> : null}
+                  </td>
+                  <td>{roleLabel(player.role)}</td>
+                  <td className="numeric">{formatNumber(player.overall)}</td>
+                  <td className="numeric">{formatLakh(player.priceLakh)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </Dialog>
+  );
+}
+
+export default function Auction({
+  snapshot,
+  timer,
+  connected,
+  isHost,
+  onBid,
+  onPause,
+  onResume,
+  onSkip,
+  onEnd,
+  notify,
+}) {
+  const { auction, teams, settings } = snapshot;
+  const current = auction?.current;
+  const player = current?.player;
+  const leader = current?.leaderTeam;
+  const me = teams.find((team) => team.id === snapshot.youId);
+  const remaining = useLotClock(auction, timer);
+  const [bidPending, setBidPending] = useState(false);
+  const [bidError, setBidError] = useState('');
+  const [hostBusy, setHostBusy] = useState(false);
+  const [squadTeamId, setSquadTeamId] = useState(null);
+  const [confirmEnd, setConfirmEnd] = useState(false);
+
+  useEffect(() => {
+    setBidError('');
+  }, [current?.player?.id]);
+
+  const timerSeconds = Math.ceil(remaining / 1000);
+  const timerPercent = auction ? Math.min(100, Math.max(0, (remaining / (auction.timerSec * 1000)) * 100)) : 0;
+  const nextBid = current?.nextBidLakh;
+  const isLeader = current?.leaderId === me?.id;
+  const purseShort = me && nextBid != null ? me.purseLakh < nextBid : false;
+  const squadFull = me ? me.squadCount >= settings.maxSquad : false;
+  const overseasBlocked = Boolean(
+    me && player?.overseas && me.overseasCount >= settings.maxOverseas,
+  );
+
+  let bidDisabledReason = '';
+  if (!connected) bidDisabledReason = 'Reconnecting to the server.';
+  else if (!auction) bidDisabledReason = 'The auction is not running.';
+  else if (auction.paused) bidDisabledReason = 'The auction is paused.';
+  else if (auction.phase !== 'open') bidDisabledReason = 'Waiting for the next lot.';
+  else if (isLeader) bidDisabledReason = 'You hold the highest bid.';
+  else if (purseShort) bidDisabledReason = 'Not enough purse for the next bid.';
+  else if (squadFull) bidDisabledReason = 'Your squad is full.';
+  else if (overseasBlocked) bidDisabledReason = 'Your overseas limit is full.';
+
+  const canBid = Boolean(current && !bidDisabledReason);
+
+  async function placeBid() {
+    if (!canBid) return;
+    setBidError('');
+    setBidPending(true);
+    const response = await onBid();
+    setBidPending(false);
+    if (!response.ok) {
+      setBidError(response.error ?? 'The bid was not accepted.');
+      notify(response.error ?? 'The bid was not accepted.', 'error');
+    }
+  }
+
+  async function hostAction(action, fallback) {
+    setHostBusy(true);
+    const response = await action();
+    setHostBusy(false);
+    if (!response.ok) notify(response.error ?? fallback, 'error');
+  }
+
+  const squadTeam = teams.find((team) => team.id === squadTeamId) ?? null;
+  const log = useMemo(() => (auction ? [...auction.log].reverse() : []), [auction?.log]);
+
+  if (!auction || !current || !player) {
+    return (
+      <main className="auction">
+        <EmptyState title="No lot is open.">
+          The auction is moving to the next player. This screen will update on its own.
+        </EmptyState>
+      </main>
+    );
+  }
+
+  const sold = auction.phase === 'sold';
+  const unsold = auction.phase === 'unsold';
+  const lotNumber = Math.min(auction.index + 1, auction.totalCount);
+
+  return (
+    <main className="auction">
+      <section className="auction-head" aria-label="Auction status">
+        <div>
+          <p className="page-kicker">
+            Lot {lotNumber} of {auction.totalCount} · {auction.queueRemaining} left after this
+          </p>
+          <h1>{auction.paused ? 'The auction is paused.' : 'The hammer is live.'}</h1>
+        </div>
+        <div className="auction-status">
+          <span className={auction.paused ? 'status-label is-paused' : 'status-label'}>
+            {auction.paused ? 'Paused' : 'Auction in progress'}
+          </span>
+          <span className="status-note">{auction.soldCount} sold · {auction.unsoldCount} unsold</span>
+        </div>
+      </section>
+
+      <div className="auction-grid">
+        <aside className="auction-teams" aria-labelledby="auction-teams-title">
+          <div className="section-head">
+            <h2 id="auction-teams-title">Purses</h2>
+            <span className="section-note">{teams.length} teams</span>
+          </div>
+          <ul className="team-list team-list-compact">
+            {teams.map((team) => (
+              <li
+                className={team.id === current.leaderId ? 'team-row is-leading' : 'team-row'}
+                key={team.id}
+              >
+                <TeamMark name={team.teamName} color={team.color} size="small" />
+                <div className="team-row-body">
+                  <p className="team-row-name">
+                    {team.teamName}
+                    {team.id === snapshot.youId ? <span className="row-tag">You</span> : null}
+                  </p>
+                  <p className="team-row-meta">
+                    {formatLakh(team.purseLakh)} · {team.squadCount}/{settings.maxSquad} ·{' '}
+                    {team.overseasCount}/{settings.maxOverseas} overseas
+                  </p>
+                </div>
+                <Button
+                  variant="quiet"
+                  className="row-action"
+                  aria-label={`View ${team.teamName} squad`}
+                  onClick={() => setSquadTeamId(team.id)}
+                >
+                  Squad
+                </Button>
+              </li>
+            ))}
+          </ul>
+        </aside>
+
+        <section className="auction-lot" aria-labelledby="lot-title">
+          <div className={sold ? 'lot-card lot-card-sold' : unsold ? 'lot-card lot-card-unsold' : 'lot-card'}>
+            <div className="lot-topline">
+              <span>{player.set}</span>
+              <span>{roleLabel(player.role)}</span>
+              <span>{nationalityLabel(player.overseas)}</span>
+            </div>
+            <h2 id="lot-title" className="lot-name">
+              {player.name}
+            </h2>
+            <p className="lot-meta">
+              IPL squad: {player.teamName} · Base price {formatLakh(player.basePriceLakh)}
+            </p>
+
+            <div className="lot-ratings" aria-label="Generated player ratings">
+              <div>
+                <span>Overall</span>
+                <strong>{formatNumber(player.ratings.overall)}</strong>
+              </div>
+              <div>
+                <span>Batting</span>
+                <strong>{formatNumber(player.ratings.batting)}</strong>
+              </div>
+              <div>
+                <span>Bowling</span>
+                <strong>{formatNumber(player.ratings.bowling)}</strong>
+              </div>
+            </div>
+
+            <PlayerStats current={current} />
+
+            <div className="lot-bid-panel">
+              <div className="bid-figures">
+                <div>
+                  <span className="label">{current.leaderId ? 'Current bid' : 'Base price'}</span>
+                  <strong className="bid-amount">{formatLakh(current.currentBidLakh)}</strong>
+                </div>
+                <div>
+                  <span className="label">Next bid</span>
+                  <strong className="bid-next">{formatLakh(nextBid)}</strong>
+                </div>
+              </div>
+
+              <div className="bid-leader">
+                <span className="label">Highest bidder</span>
+                <span>{leader ? leader.teamName : 'No bids yet'}</span>
+              </div>
+
+              <div className="timer-block">
+                <div className="timer-row">
+                  <span className="label">{auction.paused ? 'Timer paused' : 'Bid timer'}</span>
+                  <span className="timer-value">{timerSeconds}s</span>
+                </div>
+                <div className="timer-track" aria-hidden="true">
+                  <span className="timer-fill" style={{ width: `${timerPercent}%` }} />
+                </div>
+              </div>
+
+              <Button
+                variant="accent"
+                className="bid-button"
+                onClick={placeBid}
+                disabled={!canBid || bidPending}
+              >
+                {bidPending
+                  ? 'Placing bid...'
+                  : isLeader
+                    ? 'You lead the bid'
+                    : auction.paused
+                      ? 'Auction paused'
+                      : auction.phase !== 'open'
+                        ? 'Lot closed'
+                        : `Bid ${formatLakh(nextBid)}`}
+              </Button>
+              {bidDisabledReason ? <p className="action-note">{bidDisabledReason}</p> : null}
+              {bidError ? (
+                <p className="form-error" role="alert">
+                  {bidError}
+                </p>
+              ) : null}
+            </div>
+          </div>
+
+          {sold || unsold ? (
+            <div className={sold ? 'result-stamp result-stamp-sold' : 'result-stamp result-stamp-unsold'}>
+              <p className="stamp-label">{sold ? 'Sold' : 'Unsold'}</p>
+              <p className="stamp-copy">
+                {sold
+                  ? `${auction.lastEvent?.player?.name ?? player.name} to ${
+                      auction.lastEvent?.team?.teamName ?? leader?.teamName ?? 'the room'
+                    } for ${formatLakh(auction.lastEvent?.priceLakh ?? current.currentBidLakh)}.`
+                  : `${player.name} goes back into the unsold pool.`}
+              </p>
+            </div>
+          ) : null}
+        </section>
+
+        <aside className="auction-wire" aria-labelledby="wire-title">
+          {isHost ? (
+            <section className="host-panel" aria-labelledby="host-title">
+              <div className="section-head">
+                <h2 id="host-title">Host controls</h2>
+                <span className="section-note">Only you</span>
+              </div>
+              <div className="host-button-grid">
+                <Button
+                  variant="quiet"
+                  onClick={() =>
+                    hostAction(
+                      auction.paused ? onResume : onPause,
+                      auction.paused ? 'The auction did not resume.' : 'The auction did not pause.',
+                    )
+                  }
+                  disabled={hostBusy || auction.phase !== 'open'}
+                >
+                  {auction.paused ? 'Resume auction' : 'Pause auction'}
+                </Button>
+                <Button
+                  variant="quiet"
+                  onClick={() => hostAction(onSkip, 'The lot was not skipped.')}
+                  disabled={hostBusy || auction.phase !== 'open'}
+                >
+                  Skip player
+                </Button>
+                <Button variant="danger" onClick={() => setConfirmEnd(true)} disabled={hostBusy}>
+                  End auction
+                </Button>
+              </div>
+            </section>
+          ) : null}
+
+          <section className="wire-panel" aria-labelledby="wire-title">
+            <div className="section-head">
+              <h2 id="wire-title">The wire</h2>
+              <span className="section-note">Latest first</span>
+            </div>
+            {log.length === 0 ? (
+              <EmptyState title="No lots settled yet.">The first bid opens the night.</EmptyState>
+            ) : (
+              <ol className="wire-list">
+                {log.slice(0, 12).map((event) => (
+                  <li key={event.id} className={event.type === 'sold' ? 'wire-item is-sold' : 'wire-item'}>
+                    <span className="wire-type">{event.type === 'sold' ? 'Sold' : 'Unsold'}</span>
+                    <span className="wire-player">{event.player?.name}</span>
+                    <span className="wire-detail">
+                      {event.type === 'sold'
+                        ? `${event.team?.teamName ?? 'Team'} · ${formatLakh(event.priceLakh)}`
+                        : 'Back in the pool'}
+                    </span>
+                  </li>
+                ))}
+              </ol>
+            )}
+          </section>
+        </aside>
+      </div>
+
+      <p className="visually-hidden" aria-live="polite">
+        {sold
+          ? `Sold. ${player.name} to ${leader?.teamName ?? 'a team'} for ${formatLakh(current.currentBidLakh)}.`
+          : unsold
+            ? `Unsold. ${player.name} returns to the pool.`
+            : `${player.name} is on the block. The next bid is ${formatLakh(nextBid)}.`}
+      </p>
+
+      <SquadDialog team={squadTeam} onClose={() => setSquadTeamId(null)} />
+
+      <Dialog
+        open={confirmEnd}
+        title="End the auction?"
+        onClose={() => setConfirmEnd(false)}
+        footer={
+          <div className="dialog-actions">
+            <Button variant="quiet" onClick={() => setConfirmEnd(false)}>
+              Keep auction running
+            </Button>
+            <Button
+              variant="danger"
+              onClick={() => {
+                setConfirmEnd(false);
+                hostAction(onEnd, 'The auction did not end.');
+              }}
+            >
+              End auction
+            </Button>
+          </div>
+        }
+      >
+        <p>
+          The current lot will be dropped. Teams with fewer than 11 players can be filled from the
+          unsold pool before the tournament.
+        </p>
+      </Dialog>
+    </main>
+  );
+}
