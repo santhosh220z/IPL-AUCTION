@@ -1,0 +1,32 @@
+{
+  "teamFixes": {
+    "Gujrat Titans": "Gujarat Titans",
+    "Kolkata Night Riders": "Kolkata Knight Riders"
+  },
+  "playerFixes": {
+    "Devdutt Padikal": "Devdutt Padikkal",
+    "Ayush Matre": "Ayush Mhatre",
+    "T Natrajan": "T Natarajan",
+    "Rasikh Salam": "Rasikh Salam Dar",
+    "Digvesh Rathi": "Digvesh Singh Rathi",
+    "Ravichandran Smaran": "Smaran Ravichandran",
+    "Shivam Dubey": "Shivam Dube"
+  },
+  "deliveryAliases": {
+    "rahul": "KL Rahul",
+    "bishnoi": "Ravi Bishnoi",
+    "natarajan": "T Natarajan",
+    "nitish reddy": "Nitish Kumar Reddy",
+    "shivam dube": "Shivam Dube",
+    "ravindra jadeka": "Ravindra Jadeja",
+    "jaiswal": "Yashasvi Jaiswal",
+    "varun chakaravarthy": "Varun Chakravarthy",
+    "devdutt padikkal": "Devdutt Padikkal",
+    "abishek porel": "Abhishek Porel",
+    "ayush mhatre": "Ayush Mhatre",
+    "digvesh singh rathi": "Digvesh Singh Rathi",
+    "smaran ravichandran": "Smaran Ravichandran",
+    "rasikh salam dar": "Rasikh Salam Dar",
+    "akshat raghuwanshi": "Akshat Raghuvanshi"
+  }
+}
