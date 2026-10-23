@@ -10,7 +10,7 @@ import {
   PURSE_LAKH,
   normalizeTeamName,
 } from '../shared/constants.js';
-import { computeRemaining, nextBidFor } from './auction.js';
+import { computeRemaining } from './auction.js';
 
 export const rooms = new Map();
 
@@ -284,7 +284,6 @@ export function snapshotRoom(room, playersById, viewerId) {
                 currentBidLakh: current.currentBidLakh,
                 leaderId: current.leaderId,
                 leaderTeam: current.leaderId ? teamSummary(room.teams.get(current.leaderId)) : null,
-                nextBidLakh: nextBidFor(auction),
                 status: current.status,
                 bidCount: current.bidCount,
               }
