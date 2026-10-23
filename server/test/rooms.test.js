@@ -114,7 +114,7 @@ describe('host promotion and snapshots', () => {
     const playerId = data.players[0].id;
     room.auction = createAuctionState([playerId], 15);
     beginNextPlayer(room, playersById, 1000);
-    expect(placeBid(room, team.id, playersById, 2000).ok).toBe(true);
+    expect(placeBid(room, team.id, playersById, 1, 2000).ok).toBe(true);
 
     const snapshot = snapshotRoom(room, playersById, joined.team.id);
     expect(snapshot.state).toBe('auction');
