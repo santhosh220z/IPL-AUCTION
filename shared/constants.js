@@ -28,16 +28,7 @@ export const PALETTE = [
 
 export const COLOR_IDS = PALETTE.map((c) => c.id);
 
-export function bidIncrementLakh(currentBidLakh) {
-  if (currentBidLakh < 100) return 5;
-  if (currentBidLakh < 500) return 10;
-  if (currentBidLakh < 1000) return 20;
-  return 25;
-}
-
-export function nextBidLakh(currentBidLakh, hasLeader) {
-  return hasLeader ? currentBidLakh + bidIncrementLakh(currentBidLakh) : currentBidLakh;
-}
+export const BID_RAISE_LAKH = [1, 25, 50, 100];
 
 function trimNumber(value) {
   return Number.isInteger(value) ? String(value) : value.toFixed(2).replace(/\.?0+$/, '');
