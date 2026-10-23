@@ -5,6 +5,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import express from 'express';
 import { Server } from 'socket.io';
+import { bestLanAddress, lanAddresses } from './lan.js';
 import { registerSocketHandlers } from './events.js';
 import { rooms } from './rooms.js';
 
@@ -13,12 +14,23 @@ const ROOT = path.resolve(HERE, '..');
 const CLIENT_DIST = path.join(ROOT, 'client', 'dist');
 const INDEX_HTML = path.join(CLIENT_DIST, 'index.html');
 const PORT = Number(process.env.PORT) || 3001;
+const lanList = lanAddresses(os.networkInterfaces());
+const lanBest = bestLanAddress(lanList);
+
+function lanBaseUrl() {
+  const best = bestLanAddress(lanAddresses(os.networkInterfaces()));
+  return best ? `http://${best.address}:${PORT}` : null;
+}
 
 const app = express();
 app.disable('x-powered-by');
 
 app.get('/api/health', (_request, response) => {
   response.json({ ok: true, rooms: rooms.size, uptimeSec: Math.round(process.uptime()) });
+});
+
+app.get('/api/lan', (_request, response) => {
+  response.json({ baseUrl: lanBaseUrl() });
 });
 
 if (fs.existsSync(INDEX_HTML)) {
@@ -47,15 +59,13 @@ const io = new Server(server, {
 registerSocketHandlers(io);
 
 server.listen(PORT, '0.0.0.0', () => {
-  const networkInterfaces = os.networkInterfaces();
-  const addresses = Object.values(networkInterfaces)
-    .flat()
-    .filter((entry) => entry && entry.family === 'IPv4' && !entry.internal)
-    .map((entry) => entry.address);
-
-  console.log(`IPL Auction server listening on http://localhost:${PORT}`);
-  for (const address of addresses) {
-    console.log(`LAN: http://${address}:${PORT}`);
+  console.log(`IPL Auction server listening on port ${PORT}`);
+  console.log(`This PC: http://localhost:${PORT}`);
+  if (lanList.length === 0) {
+    console.log(`LAN: no usable address found. Other devices can only connect over this PC's network settings.`);
+  }
+  for (const { name, address } of lanList) {
+    console.log(`LAN: http://${address}:${PORT} (${name})`);
   }
   if (!fs.existsSync(INDEX_HTML)) {
     console.log('Client build not found. Run "npm run lan" to build and serve the client from this server.');
