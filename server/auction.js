@@ -1,3 +1,4 @@
+import crypto from 'node:crypto';
 import {
   MAX_OVERSEAS,
   MAX_SQUAD,
@@ -20,6 +21,15 @@ export function createAuctionState(playerIds, timerSec) {
     soldCount: 0,
     totalCount: playerIds.length,
   };
+}
+
+export function shuffleLots(playerIds) {
+  const ids = [...playerIds];
+  for (let i = ids.length - 1; i > 0; i -= 1) {
+    const j = crypto.randomInt(i + 1);
+    [ids[i], ids[j]] = [ids[j], ids[i]];
+  }
+  return ids;
 }
 
 export function nextBidFor(auction) {
