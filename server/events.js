@@ -328,7 +328,8 @@ export function registerSocketHandlers(io) {
     reply(ack, { ok: true });
   });
 
-  socket.on('auction:bid', (_rawPayload, ack) => {
+  socket.on('auction:bid', (rawPayload, ack) => {
+    const payload = payloadOf(rawPayload);
     const { room, team } = contextFor(socket);
     if (!room || !team) {
       reply(ack, { ok: false, error: 'You are not in a room.' });
@@ -338,7 +339,7 @@ export function registerSocketHandlers(io) {
       reply(ack, { ok: false, error: 'The auction is not running.' });
       return;
     }
-    const result = placeBid(room, team.id, playersById);
+    const result = placeBid(room, team.id, playersById, payload.raiseLakh);
     if (!result.ok) {
       reply(ack, result);
       return;
