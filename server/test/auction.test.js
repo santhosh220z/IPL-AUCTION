@@ -7,14 +7,13 @@ import {
   endAuction,
   fillSquads,
   getBidState,
-  nextBidFor,
   pauseAuction,
   placeBid,
   resumeAuction,
   settleCurrent,
   shuffleLots,
 } from '../auction.js';
-import { nextBidLakh } from '../../shared/constants.js';
+import { BID_RAISE_LAKH } from '../../shared/constants.js';
 
 function player(id, basePriceLakh, overseas = false) {
   return {
@@ -56,23 +55,43 @@ function makeFixture() {
   return { room, t1, t2, playersById };
 }
 
-describe('bid increments', () => {
-  it('uses the first bid at base price and then tiered increments', () => {
-    expect(nextBidLakh(99, false)).toBe(99);
-    expect(nextBidLakh(99, true)).toBe(104);
-    expect(nextBidLakh(100, true)).toBe(110);
-    expect(nextBidLakh(499, true)).toBe(509);
-    expect(nextBidLakh(500, true)).toBe(520);
-    expect(nextBidLakh(999, true)).toBe(1019);
-    expect(nextBidLakh(1000, true)).toBe(1025);
+describe('bid raises', () => {
+  it('bids the base price first and then offers fixed raises over the bid', () => {
+    expect(BID_RAISE_LAKH).toEqual([1, 25, 50, 100]);
+
+    const { room, t1, playersById } = makeFixture();
+    beginNextPlayer(room, playersById, 1000);
+    expect(getBidState(room, t1.id, playersById, 1).amount).toBe(101);
+    expect(placeBid(room, t1.id, playersById, 25, 2000).ok).toBe(true);
+    expect(room.auction.current.currentBidLakh).toBe(101);
+    expect(room.auction.current.leaderId).toBe('t1');
+
+    expect(getBidState(room, 't2', playersById, 1).amount).toBe(102);
+    expect(getBidState(room, 't2', playersById, 25).amount).toBe(126);
+    expect(getBidState(room, 't2', playersById, 50).amount).toBe(151);
+    expect(getBidState(room, 't2', playersById, 100).amount).toBe(201);
   });
 
-  it('returns base price until a leader exists', () => {
-    const { room, playersById } = makeFixture();
+  it('rejects raise amounts outside the fixed set', () => {
+    const { room, t1, playersById } = makeFixture();
     beginNextPlayer(room, playersById, 1000);
-    expect(nextBidFor(room.auction)).toBe(101);
-    placeBid(room, 't1', playersById, 2000);
-    expect(nextBidFor(room.auction)).toBe(111);
+    expect(placeBid(room, t1.id, playersById, 1, 2000).ok).toBe(true);
+
+    expect(getBidState(room, 't2', playersById, 7).error).toMatch(/valid raise/i);
+    expect(placeBid(room, 't2', playersById, 7, 3000).ok).toBe(false);
+  });
+
+  it('rejects raises the purse cannot afford while smaller raises still work', () => {
+    const { room, t1, playersById } = makeFixture();
+    beginNextPlayer(room, playersById, 1000);
+    expect(placeBid(room, t1.id, playersById, 100, 2000).ok).toBe(true);
+    expect(room.auction.current.currentBidLakh).toBe(101);
+
+    const t2 = room.teams.get('t2');
+    t2.purseLakh = 125;
+    expect(getBidState(room, 't2', playersById, 25).error).toMatch(/purse/i);
+    expect(getBidState(room, 't2', playersById, 1).ok).toBe(true);
+    expect(placeBid(room, 't2', playersById, 1, 3000).ok).toBe(true);
   });
 });
 
@@ -81,14 +100,14 @@ describe('auction bidding', () => {
     const { room, playersById } = makeFixture();
     beginNextPlayer(room, playersById, 1000);
 
-    expect(placeBid(room, 't1', playersById, 2000).ok).toBe(true);
-    const selfBid = placeBid(room, 't1', playersById, 3000);
+    expect(placeBid(room, 't1', playersById, 1, 2000).ok).toBe(true);
+    const selfBid = placeBid(room, 't1', playersById, 1, 3000);
     expect(selfBid.ok).toBe(false);
     expect(selfBid.error).toMatch(/highest bidder/i);
 
     expect(pauseAuction(room, 3000)).toBe(true);
-    expect(placeBid(room, 't2', playersById, 4000).ok).toBe(false);
-    expect(getBidState(room, 't2', playersById).error).toMatch(/paused/i);
+    expect(placeBid(room, 't2', playersById, 1, 4000).ok).toBe(false);
+    expect(getBidState(room, 't2', playersById, 1).error).toMatch(/paused/i);
   });
 
   it('resets the timer on every bid and freezes it while paused', () => {
@@ -96,7 +115,7 @@ describe('auction bidding', () => {
     beginNextPlayer(room, playersById, 1000);
     expect(computeRemaining(room.auction, 4000)).toBe(12000);
 
-    placeBid(room, 't1', playersById, 4000);
+    placeBid(room, 't1', playersById, 1, 4000);
     expect(computeRemaining(room.auction, 6000)).toBe(13000);
 
     expect(pauseAuction(room, 6000)).toBe(true);
@@ -110,11 +129,11 @@ describe('auction bidding', () => {
     beginNextPlayer(room, playersById, 1000);
 
     t1.purseLakh = 100;
-    expect(getBidState(room, t1.id, playersById).error).toMatch(/purse/i);
+    expect(getBidState(room, t1.id, playersById, 1).error).toMatch(/purse/i);
 
     t1.purseLakh = 12000;
     t1.squad = Array.from({ length: 25 }, (_, index) => ({ playerId: `x${index}`, priceLakh: 20 }));
-    expect(getBidState(room, t1.id, playersById).error).toMatch(/squad is full/i);
+    expect(getBidState(room, t1.id, playersById, 1).error).toMatch(/squad is full/i);
   });
 });
 
@@ -135,15 +154,15 @@ describe('auction settlement', () => {
   it('sells the player to the leader and moves to the next player', () => {
     const { room, t1, playersById } = makeFixture();
     beginNextPlayer(room, playersById, 1000);
-    placeBid(room, t1.id, playersById, 2000);
-    placeBid(room, 't2', playersById, 3000);
+    placeBid(room, t1.id, playersById, 1, 2000);
+    placeBid(room, 't2', playersById, 25, 3000);
 
     const result = settleCurrent(room, playersById, 4000);
     expect(result.kind).toBe('sold');
-    expect(result.priceLakh).toBe(111);
+    expect(result.priceLakh).toBe(126);
     expect(t1.squad).toHaveLength(0);
-    expect(room.teams.get('t2').purseLakh).toBe(12000 - 111);
-    expect(room.teams.get('t2').squad).toEqual([{ playerId: 'p1', priceLakh: 111 }]);
+    expect(room.teams.get('t2').purseLakh).toBe(12000 - 126);
+    expect(room.teams.get('t2').squad).toEqual([{ playerId: 'p1', priceLakh: 126 }]);
     expect(room.auction.log).toHaveLength(1);
 
     const advanced = advanceAuction(room, playersById, 5000);
