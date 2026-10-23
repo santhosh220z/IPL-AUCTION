@@ -155,7 +155,7 @@ export default function Lobby({
           <div className="settings-row settings-row-last">
             <div>
               <p className="settings-label">Auction order</p>
-              <p className="settings-copy">Marquee first, then role sets.</p>
+              <p className="settings-copy">Shuffled for this room. Nobody sees the next lot.</p>
             </div>
             <span className="settings-value">257 lots</span>
           </div>
