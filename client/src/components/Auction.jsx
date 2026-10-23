@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { formatLakh } from '../../../shared/constants.js';
+import { BID_RAISE_LAKH, formatLakh } from '../../../shared/constants.js';
 import {
   formatNumber,
   nationalityLabel,
@@ -176,31 +176,46 @@ export default function Auction({
 
   const timerSeconds = Math.ceil(remaining / 1000);
   const timerPercent = auction ? Math.min(100, Math.max(0, (remaining / (auction.timerSec * 1000)) * 100)) : 0;
-  const nextBid = current?.nextBidLakh;
   const isLeader = current?.leaderId === me?.id;
-  const purseShort = me && nextBid != null ? me.purseLakh < nextBid : false;
   const squadFull = me ? me.squadCount >= settings.maxSquad : false;
   const overseasBlocked = Boolean(
     me && player?.overseas && me.overseasCount >= settings.maxOverseas,
   );
 
-  let bidDisabledReason = '';
-  if (!connected) bidDisabledReason = 'Reconnecting to the server.';
-  else if (!auction) bidDisabledReason = 'The auction is not running.';
-  else if (auction.paused) bidDisabledReason = 'The auction is paused.';
-  else if (auction.phase !== 'open') bidDisabledReason = 'Waiting for the next lot.';
-  else if (isLeader) bidDisabledReason = 'You hold the highest bid.';
-  else if (purseShort) bidDisabledReason = 'Not enough purse for the next bid.';
-  else if (squadFull) bidDisabledReason = 'Your squad is full.';
-  else if (overseasBlocked) bidDisabledReason = 'Your overseas limit is full.';
+  let bidBlockedReason = '';
+  if (!connected) bidBlockedReason = 'Reconnecting to the server.';
+  else if (!auction) bidBlockedReason = 'The auction is not running.';
+  else if (auction.paused) bidBlockedReason = 'The auction is paused.';
+  else if (auction.phase !== 'open') bidBlockedReason = 'Waiting for the next lot.';
+  else if (isLeader) bidBlockedReason = 'You hold the highest bid.';
+  else if (squadFull) bidBlockedReason = 'Your squad is full.';
+  else if (overseasBlocked) bidBlockedReason = 'Your overseas limit is full.';
 
-  const canBid = Boolean(current && !bidDisabledReason);
+  const basePrice = current?.basePriceLakh ?? 0;
+  const baseUnaffordable = Boolean(me && !current?.leaderId && me.purseLakh < basePrice);
+  const raiseButtons = BID_RAISE_LAKH.map((raiseLakh) => {
+    const amount = current?.leaderId ? current.currentBidLakh + raiseLakh : null;
+    return {
+      raiseLakh,
+      amount,
+      unaffordable: amount != null && (!me || me.purseLakh < amount),
+    };
+  });
+  const raisesAllUnaffordable =
+    current?.leaderId && raiseButtons.every((button) => button.unaffordable);
+  const bidNote =
+    bidBlockedReason ||
+    (raisesAllUnaffordable
+      ? 'Not enough purse to raise the bid.'
+      : baseUnaffordable
+        ? 'Not enough purse for the base price.'
+        : '');
 
-  async function placeBid() {
-    if (!canBid) return;
+  async function placeBid(raiseLakh = null) {
+    if (bidPending || bidNote) return;
     setBidError('');
     setBidPending(true);
-    const response = await onBid();
+    const response = await onBid(raiseLakh);
     setBidPending(false);
     if (!response.ok) {
       setBidError(response.error ?? 'The bid was not accepted.');
@@ -322,10 +337,12 @@ export default function Auction({
                   <span className="label">{current.leaderId ? 'Current bid' : 'Base price'}</span>
                   <strong className="bid-amount">{formatLakh(current.currentBidLakh)}</strong>
                 </div>
-                <div>
-                  <span className="label">Next bid</span>
-                  <strong className="bid-next">{formatLakh(nextBid)}</strong>
-                </div>
+                {current.leaderId ? (
+                  <div>
+                    <span className="label">Raise options</span>
+                    <span className="bid-next">+{BID_RAISE_LAKH.map((raise) => (raise >= 100 ? `${raise / 100} Cr` : `${raise} L`)).join(' · ')}</span>
+                  </div>
+                ) : null}
               </div>
 
               <div className="bid-leader">
@@ -336,30 +353,57 @@ export default function Auction({
               <div className="timer-block">
                 <div className="timer-row">
                   <span className="label">{auction.paused ? 'Timer paused' : 'Bid timer'}</span>
-                  <span className="timer-value">{timerSeconds}s</span>
+                  <span
+                    className={
+                      !auction.paused && auction.phase === 'open' && timerSeconds <= 5
+                        ? 'timer-value is-urgent'
+                        : 'timer-value'
+                    }
+                  >
+                    {timerSeconds}s
+                  </span>
                 </div>
                 <div className="timer-track" aria-hidden="true">
                   <span className="timer-fill" style={{ width: `${timerPercent}%` }} />
                 </div>
               </div>
 
-              <Button
-                variant="accent"
-                className="bid-button"
-                onClick={placeBid}
-                disabled={!canBid || bidPending}
-              >
-                {bidPending
-                  ? 'Placing bid...'
-                  : isLeader
-                    ? 'You lead the bid'
+              {current.leaderId ? (
+                <div className="bid-raise-grid">
+                  {raiseButtons.map((button) => (
+                    <Button
+                      key={button.raiseLakh}
+                      variant="accent"
+                      className="bid-raise-btn"
+                      onClick={() => placeBid(button.raiseLakh)}
+                      disabled={Boolean(bidNote) || button.unaffordable || bidPending}
+                      title={
+                        button.unaffordable
+                          ? 'Not enough purse for this bid.'
+                          : undefined
+                      }
+                    >
+                      {bidPending ? '…' : `Bid ${formatLakh(button.amount)}`}
+                    </Button>
+                  ))}
+                </div>
+              ) : (
+                <Button
+                  variant="accent"
+                  className="bid-button"
+                  onClick={() => placeBid(null)}
+                  disabled={Boolean(bidNote) || bidPending}
+                >
+                  {bidPending
+                    ? 'Placing bid...'
                     : auction.paused
                       ? 'Auction paused'
                       : auction.phase !== 'open'
                         ? 'Lot closed'
-                        : `Bid ${formatLakh(nextBid)}`}
-              </Button>
-              {bidDisabledReason ? <p className="action-note">{bidDisabledReason}</p> : null}
+                        : `Bid ${formatLakh(basePrice)}`}
+                </Button>
+              )}
+              {bidNote ? <p className="action-note">{bidNote}</p> : null}
               {bidError ? (
                 <p className="form-error" role="alert">
                   {bidError}
@@ -419,7 +463,9 @@ export default function Auction({
           <section className="wire-panel" aria-labelledby="wire-title">
             <div className="section-head">
               <h2 id="wire-title">The wire</h2>
-              <span className="section-note">Latest first</span>
+              <span className="section-note">
+                {log.length > 12 ? `Latest 12 of ${log.length}` : 'Latest first'}
+              </span>
             </div>
             {log.length === 0 ? (
               <EmptyState title="No lots settled yet.">The first bid opens the night.</EmptyState>
@@ -447,7 +493,7 @@ export default function Auction({
           ? `Sold. ${player.name} to ${leader?.teamName ?? 'a team'} for ${formatLakh(current.currentBidLakh)}.`
           : unsold
             ? `Unsold. ${player.name} returns to the pool.`
-            : `${player.name} is on the block. The next bid is ${formatLakh(nextBid)}.`}
+             : `${player.name} is on the block. The bid is ${formatLakh(current.currentBidLakh)}.`}
       </p>
 
       <SquadDialog team={squadTeam} onClose={() => setSquadTeamId(null)} />
