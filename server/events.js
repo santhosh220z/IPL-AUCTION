@@ -16,6 +16,7 @@ import {
   placeBid,
   resumeAuction,
   settleCurrent,
+  shuffleLots,
 } from './auction.js';
 import {
   clearRoomTimers,
@@ -319,7 +320,7 @@ export function registerSocketHandlers(io) {
     stopAuctionTimers(room);
     room.state = 'auction';
     room.simulation = null;
-    room.auction = createAuctionState(playerIds, room.settings.timerSec);
+    room.auction = createAuctionState(shuffleLots(playerIds), room.settings.timerSec);
     beginNextPlayer(room, playersById);
     touch(room);
     startAuctionTicker(room);
