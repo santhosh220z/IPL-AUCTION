@@ -208,7 +208,7 @@ export function useAuctionSocket() {
     previewRoom: previewRoomRequest,
     leaveRoom,
     startAuction: () => command('auction:start'),
-    bid: () => command('auction:bid'),
+    bid: (raiseLakh) => command('auction:bid', raiseLakh == null ? {} : { raiseLakh }),
     pauseAuction: () => command('auction:pause'),
     resumeAuction: () => command('auction:resume'),
     skipPlayer: () => command('auction:skip'),
