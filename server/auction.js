@@ -1,8 +1,8 @@
 import crypto from 'node:crypto';
 import {
+  BID_RAISE_LAKH,
   MAX_OVERSEAS,
   MAX_SQUAD,
-  bidIncrementLakh,
 } from '../shared/constants.js';
 
 export function createAuctionState(playerIds, timerSec) {
@@ -30,13 +30,6 @@ export function shuffleLots(playerIds) {
     [ids[i], ids[j]] = [ids[j], ids[i]];
   }
   return ids;
-}
-
-export function nextBidFor(auction) {
-  if (!auction?.current) return null;
-  const current = auction.current;
-  if (!current.leaderId) return current.basePriceLakh;
-  return current.currentBidLakh + bidIncrementLakh(current.currentBidLakh);
 }
 
 export function beginNextPlayer(room, playersById, now = Date.now()) {
@@ -75,7 +68,7 @@ export function beginNextPlayer(room, playersById, now = Date.now()) {
   return auction.current;
 }
 
-export function getBidState(room, teamId, playersById) {
+export function getBidState(room, teamId, playersById, raise) {
   const auction = room.auction;
   if (!auction || room.state !== 'auction') return { ok: false, error: 'Auction is not running.' };
   if (!auction.current || auction.current.status !== 'open' || auction.phase !== 'open') {
@@ -89,7 +82,17 @@ export function getBidState(room, teamId, playersById) {
   if (!player) return { ok: false, error: 'Player not found.' };
   if (auction.current.leaderId === teamId) return { ok: false, error: 'You are already the highest bidder.' };
 
-  const amount = nextBidFor(auction);
+  let amount;
+  if (auction.current.leaderId == null) {
+    amount = auction.current.basePriceLakh;
+  } else {
+    const raiseLakh = Number(raise);
+    if (!BID_RAISE_LAKH.includes(raiseLakh)) {
+      return { ok: false, error: 'Choose a valid raise amount.' };
+    }
+    amount = auction.current.currentBidLakh + raiseLakh;
+  }
+
   if (team.purseLakh < amount) return { ok: false, error: 'Not enough purse for this bid.' };
   if (team.squad.length >= MAX_SQUAD) return { ok: false, error: `Squad is full (${MAX_SQUAD}).` };
   if (player.overseas && team.overseasCount >= MAX_OVERSEAS) {
@@ -99,8 +102,8 @@ export function getBidState(room, teamId, playersById) {
   return { ok: true, amount, team, player };
 }
 
-export function placeBid(room, teamId, playersById, now = Date.now()) {
-  const check = getBidState(room, teamId, playersById);
+export function placeBid(room, teamId, playersById, raise, now = Date.now()) {
+  const check = getBidState(room, teamId, playersById, raise);
   if (!check.ok) return check;
 
   const auction = room.auction;
