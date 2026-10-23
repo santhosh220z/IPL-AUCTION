@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { TIMER_OPTIONS, formatLakh } from '../../../shared/constants.js';
 import { Button, CopyButton, TeamMark } from './ui.jsx';
 
@@ -12,10 +12,25 @@ export default function Lobby({
 }) {
   const [starting, setStarting] = useState(false);
   const [savingTimer, setSavingTimer] = useState(false);
+  const [lanOrigin, setLanOrigin] = useState(window.location.origin);
+
+  useEffect(() => {
+    let active = true;
+    fetch('/api/lan')
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data) => {
+        if (active && data?.baseUrl) setLanOrigin(data.baseUrl);
+      })
+      .catch(() => {});
+    return () => {
+      active = false;
+    };
+  }, []);
+
   const { teams, settings, code, hostId } = snapshot;
   const teamCount = teams.length;
   const canStart = teamCount >= 2;
-  const inviteUrl = `${window.location.origin}${window.location.pathname}?room=${code}`;
+  const inviteUrl = `${lanOrigin}${window.location.pathname}?room=${code}`;
 
   async function start() {
     setStarting(true);
