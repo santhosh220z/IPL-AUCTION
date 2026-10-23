@@ -14,7 +14,7 @@ dataset is `server/data/players.json`, rebuilt by `npm run data:build`.
 - `npm run lan` - build client, serve on :3001, print the LAN URL
 - `npm run data:build` - rebuild players.json from `ipl dataset/`
 - `npm test` - Vitest
-- Single test: `npm test -w server -- auction.test -t "increment"`
+- Single test: `npm test -w server -- auction.test -t "raises"`
 
 Note: `ipl dataset/` contains a space; quote it in shell commands.
 On Windows, use `npm.cmd` if PowerShell blocks `npm.ps1`.
@@ -39,8 +39,9 @@ On Windows, use `npm.cmd` if PowerShell blocks `npm.ps1`.
 
 - Server is authoritative for bids, timers, purse, squad/overseas limits,
   sales, and simulation. The client never computes outcomes.
-- Bid increment is derived server-side from the current bid; the first bid
-  equals base price. No self-outbid. Every bid resets the timer.
+- Raise options are fixed at +1L/+25L/+50L/+1Cr over the current bid
+  (`BID_RAISE_LAKH`, revalidated server-side); the first bid equals base
+  price. No self-outbid. Every bid resets the timer.
 - Room codes: 6 uppercase chars from `ABCDEFGHJKLMNPQRSTUVWXYZ23456789`.
 - Team names are case-insensitively unique; accent colors are unique per
   room; max 10 teams.
