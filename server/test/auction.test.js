@@ -12,6 +12,7 @@ import {
   placeBid,
   resumeAuction,
   settleCurrent,
+  shuffleLots,
 } from '../auction.js';
 import { nextBidLakh } from '../../shared/constants.js';
 
@@ -114,6 +115,19 @@ describe('auction bidding', () => {
     t1.purseLakh = 12000;
     t1.squad = Array.from({ length: 25 }, (_, index) => ({ playerId: `x${index}`, priceLakh: 20 }));
     expect(getBidState(room, t1.id, playersById).error).toMatch(/squad is full/i);
+  });
+});
+
+describe('lot shuffling', () => {
+  it('shuffles the lot order into a fresh permutation', () => {
+    const ids = Array.from({ length: 12 }, (_, index) => `p${index + 1}`);
+    const shuffled = shuffleLots(ids);
+    expect(shuffled).toHaveLength(ids.length);
+    expect([...shuffled].sort()).toEqual([...ids].sort());
+    expect(ids).toEqual([
+      'p1', 'p2', 'p3', 'p4', 'p5', 'p6',
+      'p7', 'p8', 'p9', 'p10', 'p11', 'p12',
+    ]);
   });
 });
 
