@@ -2,32 +2,55 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { io } from 'socket.io-client';
 
 const socket = io();
-const SESSION_KEY = 'ipl-auction:session';
+// Sessions live per room code ({code: {code, token, teamId, updatedAt}}) so a
+// second tab opening another room can never clobber this one's seat. One
+// global key meant every tab shared (and stole) a single session.
+const SESSIONS_KEY = 'ipl-auction:sessions';
+const LEGACY_KEY = 'ipl-auction:session';
 
-function readSession() {
+function readSessions() {
   try {
-    const raw = window.localStorage.getItem(SESSION_KEY);
-    if (!raw) return null;
-    const parsed = JSON.parse(raw);
-    if (!parsed?.code || !parsed?.token) return null;
-    return parsed;
+    const sessions = JSON.parse(window.localStorage.getItem(SESSIONS_KEY));
+    return sessions && typeof sessions === 'object' ? sessions : {};
   } catch {
-    return null;
+    return {};
   }
 }
 
-function writeSession(session) {
+function writeSessions(sessions) {
   try {
-    if (session) window.localStorage.setItem(SESSION_KEY, JSON.stringify(session));
-    else window.localStorage.removeItem(SESSION_KEY);
+    window.localStorage.setItem(SESSIONS_KEY, JSON.stringify(sessions));
   } catch {
     return;
   }
 }
 
+function migrateLegacySession() {
+  try {
+    const raw = window.localStorage.getItem(LEGACY_KEY);
+    if (!raw) return;
+    const parsed = JSON.parse(raw);
+    if (parsed?.code && parsed?.token) {
+      writeSessions({ ...readSessions(), [parsed.code]: parsed });
+    }
+    window.localStorage.removeItem(LEGACY_KEY);
+  } catch {
+    return;
+  }
+}
+
+function readSession() {
+  migrateLegacySession();
+  const sessions = Object.values(readSessions())
+    .filter((session) => session?.code && session?.token)
+    .sort((a, b) => (b.updatedAt ?? 0) - (a.updatedAt ?? 0));
+  return sessions[0] ?? null;
+}
+
 export function useAuctionSocket() {
   const initialSession = useRef(readSession());
   const sessionRef = useRef(initialSession.current);
+  const snapshotRef = useRef(null);
   const rejoinInFlight = useRef(false);
   const noticeId = useRef(0);
 
@@ -71,16 +94,21 @@ export function useAuctionSocket() {
 
   const applySession = useCallback((session) => {
     sessionRef.current = session;
-    writeSession(session);
+    const sessions = readSessions();
+    if (session) {
+      sessions[session.code] = { ...session, updatedAt: Date.now() };
+      writeSessions(sessions);
+    } else if (sessionRef.current?.code || snapshotRef.current?.code) {
+      const closedCode = sessionRef.current?.code ?? snapshotRef.current?.code;
+      delete sessions[closedCode];
+      writeSessions(sessions);
+    }
   }, []);
 
   const handleSnapshot = useCallback((incoming) => {
+    snapshotRef.current = incoming;
     setSnapshot(incoming);
     setRestoring(false);
-    if (incoming?.code && sessionRef.current) {
-      sessionRef.current = { ...sessionRef.current, code: incoming.code, teamId: incoming.youId };
-      writeSession(sessionRef.current);
-    }
   }, []);
 
   const rejoin = useCallback(async () => {
@@ -195,7 +223,6 @@ export function useAuctionSocket() {
   const command = useCallback((event, payload) => request(event, payload), [request]);
 
   return {
-    socket,
     connected,
     restoring,
     snapshot,
