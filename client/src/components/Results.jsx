@@ -1,8 +1,13 @@
 import { useEffect, useState } from 'react';
-import { formatLakh } from '../../../shared/constants.js';
+import { formatLakh, parseSeed as parseSeedRaw } from '../../../shared/constants.js';
 import { formatNumber, formatSeed, pluralize, roleLabel } from '../lib/format.js';
 import { Button, EmptyState, Field, Stat, TeamMark } from './ui.jsx';
 import ScorecardDialog from './ScorecardDialog.jsx';
+
+function parseSeedText(text) {
+  const parsed = parseSeedRaw(text);
+  return parsed.error ? { error: parsed.error } : { seed: parsed.seed };
+}
 
 function spentBy(team) {
   return team.squad.reduce((sum, player) => sum + player.priceLakh, 0);
@@ -132,9 +137,12 @@ function TournamentView({ simulation, teams, isHost, seed, setSeed, onRun, onLea
   }, [simulation.generatedAt]);
 
   async function runAgain() {
-    const trimmed = seed.trim();
-    const value = trimmed === '' ? null : Number(trimmed);
-    const response = await onRun(value);
+    const parsed = parseSeedText(seed);
+    if (parsed.error) {
+      notify(parsed.error, 'error');
+      return;
+    }
+    const response = await onRun(parsed.seed);
     if (!response.ok) notify(response.error ?? 'The tournament did not run.', 'error');
   }
 
@@ -265,21 +273,25 @@ export default function Results({ snapshot, isHost, onFillSquads, onRunSimulatio
     if (!response.ok) {
       notify(response.error ?? 'The short squads were not filled.', 'error');
     } else {
+      const unmatched = response.shortTeams?.length ?? 0;
       notify(
         `${response.filled} ${pluralize(response.filled, 'player')} added across ${response.teams} ${pluralize(
           response.teams,
           'team',
-        )}.`,
+        )}.${unmatched > 0 ? ` ${unmatched} ${pluralize(unmatched, 'team')} still below 11 and would be disqualified.` : ''}`,
         'info',
       );
     }
   }
 
   async function run() {
-    const trimmed = seed.trim();
-    const value = trimmed === '' ? null : Number(trimmed);
+    const parsed = parseSeedText(seed);
+    if (parsed.error) {
+      notify(parsed.error, 'error');
+      return;
+    }
     setRunBusy(true);
-    const response = await onRunSimulation(value);
+    const response = await onRunSimulation(parsed.seed);
     setRunBusy(false);
     if (!response.ok) notify(response.error ?? 'The tournament did not run.', 'error');
   }
@@ -329,12 +341,27 @@ export default function Results({ snapshot, isHost, onFillSquads, onRunSimulatio
           </p>
           {isHost ? (
             <>
-              <Button variant="accent" onClick={fill} disabled={fillBusy}>
+              <Button variant="accent" onClick={fill} disabled={fillBusy || unsold.length === 0}>
                 {fillBusy ? 'Filling squads...' : 'Fill squads'}
               </Button>
               <p className="action-note">
-                Adds the cheapest unsold players at base price until each squad has 11.
+                {unsold.length === 0
+                  ? `No unsold players left. ${shortTeams
+                      .map((team) => team.teamName)
+                      .join(', ')} cannot reach 11 and would be disqualified from the tournament.`
+                  : 'Adds the cheapest unsold players at base price until each squad has 11. Teams left short are disqualified.'}
               </p>
+              {teams.length - shortTeams.length >= 2 ? (
+                <>
+                  <SeedControl seed={seed} onSeed={setSeed} />
+                  <Button variant="accent" onClick={run} disabled={runBusy}>
+                    {runBusy ? 'Simulating...' : 'Run tournament anyway'}
+                  </Button>
+                  <p className="action-note">
+                    Teams below 11 sit out the tournament. The complete squads play.
+                  </p>
+                </>
+              ) : null}
             </>
           ) : (
             <p className="action-note">Waiting for the host to fill the short squads.</p>
