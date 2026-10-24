@@ -2,7 +2,7 @@
   "meta": {
     "season": "IPL 2026",
     "source": "ipl dataset/squads.csv + deliveries.csv (deliveries canonical)",
-    "generatedAt": "2026-10-22T14:53:36.198Z",
+    "generatedAt": "2026-10-24T14:18:39.321Z",
     "playerCount": 257,
     "teamCount": 10,
     "overseasCount": 82,
@@ -17,7 +17,7 @@
       "boundariesPerBall": 0.2249,
       "average": 30.0138,
       "economy": 9.706,
-      "wicketsPerOver": 0.303,
+      "wicketsPerOver": 0.3034,
       "dotPct": 0.327,
       "fieldPerMatch": 0.3987
     }
@@ -4465,7 +4465,7 @@
         "batting": 25.8,
         "bowling": 92.4,
         "fielding": 75.4,
-        "overall": 58.8
+        "overall": 58.7
       },
       "stats": {
         "matches": 11,
@@ -4653,7 +4653,7 @@
         "batting": 53,
         "bowling": 57.2,
         "fielding": 63,
-        "overall": 55.8
+        "overall": 55.7
       },
       "stats": {
         "matches": 1,
@@ -4745,7 +4745,7 @@
       "set": "All-rounders",
       "ratings": {
         "batting": 51.5,
-        "bowling": 66.2,
+        "bowling": 66.1,
         "fielding": 30,
         "overall": 55.5
       },
@@ -6296,7 +6296,7 @@
       "set": "All-rounders",
       "ratings": {
         "batting": 46.4,
-        "bowling": 45.9,
+        "bowling": 45.8,
         "fielding": 64.4,
         "overall": 48
       },
@@ -6343,7 +6343,7 @@
       "set": "All-rounders",
       "ratings": {
         "batting": 29.2,
-        "bowling": 71.2,
+        "bowling": 71.1,
         "fielding": 36.9,
         "overall": 47.6
       },
@@ -6625,9 +6625,9 @@
       "set": "All-rounders",
       "ratings": {
         "batting": 29.9,
-        "bowling": 51.3,
+        "bowling": 51.2,
         "fielding": 73.7,
-        "overall": 43.3
+        "overall": 43.2
       },
       "stats": {
         "matches": 13,
@@ -6815,7 +6815,7 @@
         "batting": 32.2,
         "bowling": 48.2,
         "fielding": 56.8,
-        "overall": 41.3
+        "overall": 41.4
       },
       "stats": {
         "matches": 6,
@@ -7238,7 +7238,7 @@
         "batting": 32.6,
         "bowling": 26.1,
         "fielding": 34.4,
-        "overall": 30.1
+        "overall": 30
       },
       "stats": {
         "matches": 15,
@@ -7507,53 +7507,6 @@
       }
     },
     {
-      "id": "rasikh-salam-dar",
-      "name": "Rasikh Salam Dar",
-      "team": "RCB",
-      "teamName": "Royal Challengers Bengaluru",
-      "role": "Bowler",
-      "overseas": false,
-      "captain": false,
-      "basePriceLakh": 150,
-      "set": "Bowlers",
-      "ratings": {
-        "batting": 48.9,
-        "bowling": 74.5,
-        "fielding": 39,
-        "overall": 67.2
-      },
-      "stats": {
-        "matches": 12,
-        "batting": {
-          "innings": 1,
-          "runs": 3,
-          "balls": 2,
-          "dismissals": 0,
-          "fours": 0,
-          "sixes": 0,
-          "dotBalls": 0,
-          "average": 3,
-          "strikeRate": 150
-        },
-        "bowling": {
-          "innings": 12,
-          "balls": 257,
-          "runs": 404,
-          "wickets": 19,
-          "dotBalls": 82,
-          "economy": 9.43,
-          "average": 21.26,
-          "strikeRate": 13.5
-        },
-        "fielding": {
-          "catches": 3,
-          "stumpings": 0,
-          "runOuts": 0,
-          "total": 3
-        }
-      }
-    },
-    {
       "id": "akeal-hosein",
       "name": "Akeal Hosein",
       "team": "CSK",
@@ -7597,6 +7550,100 @@
           "stumpings": 0,
           "runOuts": 0,
           "total": 1
+        }
+      }
+    },
+    {
+      "id": "rasikh-salam-dar",
+      "name": "Rasikh Salam Dar",
+      "team": "RCB",
+      "teamName": "Royal Challengers Bengaluru",
+      "role": "Bowler",
+      "overseas": false,
+      "captain": false,
+      "basePriceLakh": 150,
+      "set": "Bowlers",
+      "ratings": {
+        "batting": 48.9,
+        "bowling": 74.5,
+        "fielding": 39,
+        "overall": 67.1
+      },
+      "stats": {
+        "matches": 12,
+        "batting": {
+          "innings": 1,
+          "runs": 3,
+          "balls": 2,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": 3,
+          "strikeRate": 150
+        },
+        "bowling": {
+          "innings": 12,
+          "balls": 257,
+          "runs": 404,
+          "wickets": 19,
+          "dotBalls": 82,
+          "economy": 9.43,
+          "average": 21.26,
+          "strikeRate": 13.5
+        },
+        "fielding": {
+          "catches": 3,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 3
+        }
+      }
+    },
+    {
+      "id": "prince-yadav",
+      "name": "Prince Yadav",
+      "team": "LSG",
+      "teamName": "Lucknow Super Giants",
+      "role": "Bowler",
+      "overseas": false,
+      "captain": false,
+      "basePriceLakh": 150,
+      "set": "Bowlers",
+      "ratings": {
+        "batting": 47.4,
+        "bowling": 70.9,
+        "fielding": 41.5,
+        "overall": 64.4
+      },
+      "stats": {
+        "matches": 14,
+        "batting": {
+          "innings": 1,
+          "runs": 0,
+          "balls": 1,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 1,
+          "average": 0,
+          "strikeRate": 0
+        },
+        "bowling": {
+          "innings": 15,
+          "balls": 312,
+          "runs": 461,
+          "wickets": 17,
+          "dotBalls": 113,
+          "economy": 8.87,
+          "average": 27.12,
+          "strikeRate": 18.4
+        },
+        "fielding": {
+          "catches": 4,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 4
         }
       }
     },
@@ -7738,53 +7785,6 @@
           "stumpings": 0,
           "runOuts": 0,
           "total": 0
-        }
-      }
-    },
-    {
-      "id": "prince-yadav",
-      "name": "Prince Yadav",
-      "team": "LSG",
-      "teamName": "Lucknow Super Giants",
-      "role": "Bowler",
-      "overseas": false,
-      "captain": false,
-      "basePriceLakh": 150,
-      "set": "Bowlers",
-      "ratings": {
-        "batting": 47.4,
-        "bowling": 68.5,
-        "fielding": 41.5,
-        "overall": 62.7
-      },
-      "stats": {
-        "matches": 14,
-        "batting": {
-          "innings": 1,
-          "runs": 0,
-          "balls": 1,
-          "dismissals": 0,
-          "fours": 0,
-          "sixes": 0,
-          "dotBalls": 1,
-          "average": 0,
-          "strikeRate": 0
-        },
-        "bowling": {
-          "innings": 15,
-          "balls": 312,
-          "runs": 461,
-          "wickets": 16,
-          "dotBalls": 113,
-          "economy": 8.87,
-          "average": 28.81,
-          "strikeRate": 19.5
-        },
-        "fielding": {
-          "catches": 4,
-          "stumpings": 0,
-          "runOuts": 0,
-          "total": 4
         }
       }
     },
@@ -7943,7 +7943,7 @@
         "batting": 53,
         "bowling": 65.6,
         "fielding": 36.2,
-        "overall": 60.8
+        "overall": 60.7
       },
       "stats": {
         "matches": 6,
@@ -7988,7 +7988,7 @@
       "set": "Bowlers",
       "ratings": {
         "batting": 46.2,
-        "bowling": 67.7,
+        "bowling": 67.6,
         "fielding": 27.3,
         "overall": 60.4
       },
@@ -8020,53 +8020,6 @@
           "stumpings": 0,
           "runOuts": 0,
           "total": 1
-        }
-      }
-    },
-    {
-      "id": "josh-hazlewood",
-      "name": "Josh Hazlewood",
-      "team": "RCB",
-      "teamName": "Royal Challengers Bengaluru",
-      "role": "Bowler",
-      "overseas": true,
-      "captain": false,
-      "basePriceLakh": 100,
-      "set": "Bowlers",
-      "ratings": {
-        "batting": 43.1,
-        "bowling": 61.7,
-        "fielding": 67.7,
-        "overall": 59.5
-      },
-      "stats": {
-        "matches": 13,
-        "batting": {
-          "innings": 1,
-          "runs": 0,
-          "balls": 1,
-          "dismissals": 1,
-          "fours": 0,
-          "sixes": 0,
-          "dotBalls": 1,
-          "average": 0,
-          "strikeRate": 0
-        },
-        "bowling": {
-          "innings": 13,
-          "balls": 309,
-          "runs": 493,
-          "wickets": 15,
-          "dotBalls": 118,
-          "economy": 9.57,
-          "average": 32.87,
-          "strikeRate": 20.6
-        },
-        "fielding": {
-          "catches": 8,
-          "stumpings": 0,
-          "runOuts": 0,
-          "total": 8
         }
       }
     },
@@ -8118,6 +8071,53 @@
       }
     },
     {
+      "id": "josh-hazlewood",
+      "name": "Josh Hazlewood",
+      "team": "RCB",
+      "teamName": "Royal Challengers Bengaluru",
+      "role": "Bowler",
+      "overseas": true,
+      "captain": false,
+      "basePriceLakh": 100,
+      "set": "Bowlers",
+      "ratings": {
+        "batting": 43.1,
+        "bowling": 61.6,
+        "fielding": 67.7,
+        "overall": 59.4
+      },
+      "stats": {
+        "matches": 13,
+        "batting": {
+          "innings": 1,
+          "runs": 0,
+          "balls": 1,
+          "dismissals": 1,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 1,
+          "average": 0,
+          "strikeRate": 0
+        },
+        "bowling": {
+          "innings": 13,
+          "balls": 309,
+          "runs": 493,
+          "wickets": 15,
+          "dotBalls": 118,
+          "economy": 9.57,
+          "average": 32.87,
+          "strikeRate": 20.6
+        },
+        "fielding": {
+          "catches": 8,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 8
+        }
+      }
+    },
+    {
       "id": "harpreet-brar",
       "name": "Harpreet Brar",
       "team": "PBKS",
@@ -8131,7 +8131,7 @@
         "batting": 51.2,
         "bowling": 61.3,
         "fielding": 54,
-        "overall": 59.1
+        "overall": 59
       },
       "stats": {
         "matches": 2,
@@ -8212,53 +8212,6 @@
       }
     },
     {
-      "id": "kartik-tyagi",
-      "name": "Kartik Tyagi",
-      "team": "KKR",
-      "teamName": "Kolkata Knight Riders",
-      "role": "Bowler",
-      "overseas": false,
-      "captain": false,
-      "basePriceLakh": 100,
-      "set": "Bowlers",
-      "ratings": {
-        "batting": 34.4,
-        "bowling": 64.6,
-        "fielding": 43.4,
-        "overall": 58
-      },
-      "stats": {
-        "matches": 13,
-        "batting": {
-          "innings": 3,
-          "runs": 11,
-          "balls": 10,
-          "dismissals": 3,
-          "fours": 1,
-          "sixes": 1,
-          "dotBalls": 7,
-          "average": 3.67,
-          "strikeRate": 110
-        },
-        "bowling": {
-          "innings": 13,
-          "balls": 306,
-          "runs": 498,
-          "wickets": 18,
-          "dotBalls": 107,
-          "economy": 9.76,
-          "average": 27.67,
-          "strikeRate": 17
-        },
-        "fielding": {
-          "catches": 4,
-          "stumpings": 0,
-          "runOuts": 0,
-          "total": 4
-        }
-      }
-    },
-    {
       "id": "blessing-muzarabani",
       "name": "Blessing Muzarabani",
       "team": "KKR",
@@ -8306,6 +8259,53 @@
       }
     },
     {
+      "id": "kartik-tyagi",
+      "name": "Kartik Tyagi",
+      "team": "KKR",
+      "teamName": "Kolkata Knight Riders",
+      "role": "Bowler",
+      "overseas": false,
+      "captain": false,
+      "basePriceLakh": 100,
+      "set": "Bowlers",
+      "ratings": {
+        "batting": 34.4,
+        "bowling": 64.6,
+        "fielding": 43.4,
+        "overall": 57.9
+      },
+      "stats": {
+        "matches": 13,
+        "batting": {
+          "innings": 3,
+          "runs": 11,
+          "balls": 10,
+          "dismissals": 3,
+          "fours": 1,
+          "sixes": 1,
+          "dotBalls": 7,
+          "average": 3.67,
+          "strikeRate": 110
+        },
+        "bowling": {
+          "innings": 13,
+          "balls": 306,
+          "runs": 498,
+          "wickets": 18,
+          "dotBalls": 107,
+          "economy": 9.76,
+          "average": 27.67,
+          "strikeRate": 17
+        },
+        "fielding": {
+          "catches": 4,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 4
+        }
+      }
+    },
+    {
       "id": "arshad-khan",
       "name": "Arshad Khan",
       "team": "GT",
@@ -8317,7 +8317,7 @@
       "set": "Bowlers",
       "ratings": {
         "batting": 52.5,
-        "bowling": 60.7,
+        "bowling": 60.6,
         "fielding": 43.1,
         "overall": 57.7
       },
@@ -8364,7 +8364,7 @@
       "set": "Bowlers",
       "ratings": {
         "batting": 42.2,
-        "bowling": 61.8,
+        "bowling": 61.7,
         "fielding": 43.4,
         "overall": 57
       },
@@ -8458,7 +8458,7 @@
       "set": "Bowlers",
       "ratings": {
         "batting": 31.5,
-        "bowling": 62.4,
+        "bowling": 62.3,
         "fielding": 37.3,
         "overall": 55.2
       },
@@ -10197,7 +10197,7 @@
       "set": "Bowlers",
       "ratings": {
         "batting": 53,
-        "bowling": 53.6,
+        "bowling": 53.5,
         "fielding": 23.1,
         "overall": 50.4
       },
@@ -10291,9 +10291,9 @@
       "set": "Bowlers",
       "ratings": {
         "batting": 53,
-        "bowling": 50.9,
+        "bowling": 50.8,
         "fielding": 32.6,
-        "overall": 49.4
+        "overall": 49.3
       },
       "stats": {
         "matches": 12,
@@ -10340,7 +10340,7 @@
         "batting": 38.8,
         "bowling": 53.4,
         "fielding": 31.7,
-        "overall": 49.1
+        "overall": 49
       },
       "stats": {
         "matches": 8,
@@ -10479,7 +10479,7 @@
       "set": "Bowlers",
       "ratings": {
         "batting": 48.3,
-        "bowling": 49.1,
+        "bowling": 49,
         "fielding": 41.5,
         "overall": 48.2
       },
@@ -10558,53 +10558,6 @@
           "stumpings": 0,
           "runOuts": 1,
           "total": 2
-        }
-      }
-    },
-    {
-      "id": "spencer-johnson",
-      "name": "Spencer Johnson",
-      "team": "CSK",
-      "teamName": "Chennai Super Kings",
-      "role": "Bowler",
-      "overseas": true,
-      "captain": false,
-      "basePriceLakh": 50,
-      "set": "Bowlers",
-      "ratings": {
-        "batting": 43.1,
-        "bowling": 48.7,
-        "fielding": 47.7,
-        "overall": 47.8
-      },
-      "stats": {
-        "matches": 3,
-        "batting": {
-          "innings": 1,
-          "runs": 0,
-          "balls": 1,
-          "dismissals": 1,
-          "fours": 0,
-          "sixes": 0,
-          "dotBalls": 1,
-          "average": 0,
-          "strikeRate": 0
-        },
-        "bowling": {
-          "innings": 3,
-          "balls": 66,
-          "runs": 108,
-          "wickets": 2,
-          "dotBalls": 26,
-          "economy": 9.82,
-          "average": 54,
-          "strikeRate": 33
-        },
-        "fielding": {
-          "catches": 1,
-          "stumpings": 0,
-          "runOuts": 0,
-          "total": 1
         }
       }
     },
@@ -10699,6 +10652,53 @@
           "stumpings": 0,
           "runOuts": 0,
           "total": 3
+        }
+      }
+    },
+    {
+      "id": "spencer-johnson",
+      "name": "Spencer Johnson",
+      "team": "CSK",
+      "teamName": "Chennai Super Kings",
+      "role": "Bowler",
+      "overseas": true,
+      "captain": false,
+      "basePriceLakh": 50,
+      "set": "Bowlers",
+      "ratings": {
+        "batting": 43.1,
+        "bowling": 48.7,
+        "fielding": 47.7,
+        "overall": 47.7
+      },
+      "stats": {
+        "matches": 3,
+        "batting": {
+          "innings": 1,
+          "runs": 0,
+          "balls": 1,
+          "dismissals": 1,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 1,
+          "average": 0,
+          "strikeRate": 0
+        },
+        "bowling": {
+          "innings": 3,
+          "balls": 66,
+          "runs": 108,
+          "wickets": 2,
+          "dotBalls": 26,
+          "economy": 9.82,
+          "average": 54,
+          "strikeRate": 33
+        },
+        "fielding": {
+          "catches": 1,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 1
         }
       }
     },
@@ -11374,7 +11374,7 @@
         "batting": 47.9,
         "bowling": 38.1,
         "fielding": 36.8,
-        "overall": 39.5
+        "overall": 39.4
       },
       "stats": {
         "matches": 2,
@@ -12079,7 +12079,7 @@
         "batting": 47.8,
         "bowling": 21.4,
         "fielding": 43.1,
-        "overall": 27.6
+        "overall": 27.5
       },
       "stats": {
         "matches": 7,
