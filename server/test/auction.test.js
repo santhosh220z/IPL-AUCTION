@@ -248,4 +248,57 @@ describe('auction settlement', () => {
     expect(result.filled).toBe(0);
     expect(t1.squad).toHaveLength(10);
   });
+
+  it('does not hand out free pickups and reports teams that stay below 11', () => {
+    const { room, t1, t2, playersById } = makeFixture();
+    room.state = 'ended';
+    room.auction.phase = 'ended';
+    room.auction.unsold = ['p11', 'p12', 'p1'];
+    t1.purseLakh = 99;
+    t1.squad = Array.from({ length: 10 }, (_, index) => ({ playerId: `x${index + 1}`, priceLakh: 100 }));
+    t2.squad = Array.from({ length: 10 }, (_, index) => ({ playerId: `y${index + 1}`, priceLakh: 100 }));
+
+    const result = fillSquads(room, playersById);
+    expect(result.filled).toBe(1);
+    expect(t1.squad).toHaveLength(10);
+    expect(t1.purseLakh).toBe(99);
+    expect(result.shortTeams).toEqual([t1.id]);
+    expect(t2.squad).toHaveLength(11);
+  });
+
+  it('goes home short instead of discounting players below base price', () => {
+    const { room, t1, t2, playersById } = makeFixture();
+    room.state = 'ended';
+    room.auction.phase = 'ended';
+    room.auction.unsold = ['p11', 'p12'];
+    t1.purseLakh = 100;
+    t2.purseLakh = 100;
+    t1.squad = Array.from({ length: 10 }, (_, index) => ({ playerId: `x${index + 1}`, priceLakh: 100 }));
+    t2.squad = Array.from({ length: 10 }, (_, index) => ({ playerId: `y${index + 1}`, priceLakh: 100 }));
+
+    // Base prices are 101-112: nothing is affordable. No transfer at a discount.
+    const result = fillSquads(room, playersById);
+    expect(result.filled).toBe(0);
+    expect(t1.squad).toHaveLength(10);
+    expect(t1.purseLakh).toBe(100);
+    expect(result.shortTeams).toEqual([t1.id, t2.id]);
+  });
+
+  it('still fills squads that can afford base price', () => {
+    const { room, t1, t2, playersById } = makeFixture();
+    room.state = 'ended';
+    room.auction.phase = 'ended';
+    room.auction.unsold = ['p11', 'p12'];
+    t1.squad = Array.from({ length: 10 }, (_, index) => ({ playerId: `x${index + 1}`, priceLakh: 100 }));
+    t2.squad = Array.from({ length: 10 }, (_, index) => ({ playerId: `y${index + 1}`, priceLakh: 100 }));
+
+    const result = fillSquads(room, playersById);
+    expect(result.filled).toBe(2);
+    expect(result.shortTeams).toEqual([]);
+    expect(t1.squad).toHaveLength(11);
+    expect(t2.squad).toHaveLength(11);
+    // Each purchase costs exactly the base price.
+    const b1 = playersById.get(t1.squad.at(-1).playerId).basePriceLakh;
+    expect(t1.purseLakh).toBe(12000 - b1);
+  });
 });
