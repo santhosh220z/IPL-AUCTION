@@ -37,7 +37,15 @@ const ROLE_MAP = {
 const SET_ORDER = ['Marquee', 'Batters', 'Wicketkeepers', 'All-rounders', 'Bowlers'];
 const EXCLUDED_NAMES = ['Dilshan Madushanka', 'George Linde', 'Krish Bhagat'];
 const EXCLUDED_PLAYERS = new Set(EXCLUDED_NAMES.map((name) => normalizeKey(name)));
-const BOWLER_WICKETS = new Set(['caught', 'bowled', 'lbw', 'stumped', 'hit wicket', 'caught and bowled']);
+const BOWLER_WICKETS = new Set([
+  'caught',
+  'bowled',
+  'lbw',
+  'stumped',
+  'hit wicket',
+  'caught and bowled',
+  'obstructing the field',
+]);
 
 function readCsv(name) {
   return parseCsvObjects(fs.readFileSync(path.join(RAW_DIR, name), 'utf8'));
@@ -189,6 +197,10 @@ for (const row of deliveries) {
     const dismissed = lookup(row.player_dismissed);
     if (dismissed) {
       dismissed.matchIds.add(matchId);
+      // A non-striker cannot face a ball, so without this line their only
+      // innings would be invisible (innings=0 with a dismissal) and the
+      // batting average would report null.
+      dismissed.battingInnings.add(inningsKey);
       dismissed.stats.batting.dismissals += 1;
     }
   }
@@ -422,4 +434,12 @@ console.log('Top run scorers:', [...players].sort((a, b) => b.stats.batting.runs
 console.log('Top wicket takers:', [...players].sort((a, b) => b.stats.bowling.wickets - a.stats.bowling.wickets).slice(0, 5).map((player) => `${player.name} ${player.stats.bowling.wickets}`).join(' | '));
 if (unmatched.size > 0) {
   console.warn(`Unmatched delivery names (${unmatched.size}):`, [...unmatched.entries()].map(([name, count]) => `${name} (${count})`).join(', '));
+}
+
+const priorOnly = players.filter((player) => player.stats.matches === 0);
+if (priorOnly.length > 0) {
+  console.warn(
+    `Squad players with no delivery data - ratings are priors only (${priorOnly.length}):`,
+    priorOnly.map((player) => player.name).join(', '),
+  );
 }
