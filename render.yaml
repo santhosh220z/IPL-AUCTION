@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: ipl-auction
+    runtime: node
+    plan: free
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    autoDeploy: true
+    # Free instances sleep ~15 min after the last connection and restart with
+    # empty rooms — accepted for a game-night app with in-memory rooms.
+envVars:
+  - key: NODE_ENV
+    value: production
+  - key: PUBLIC_URL
+    sync: false
