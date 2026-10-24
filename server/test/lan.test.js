@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { bestLanAddress, lanAddresses } from '../lan.js';
+import { bestLanAddress, deriveBaseUrl, lanAddresses } from '../lan.js';
 
 const iface = (address, family = 'IPv4', internal = false) => ({ address, family, internal });
 
@@ -40,5 +40,36 @@ describe('bestLanAddress', () => {
     ];
     expect(bestLanAddress(list)).toEqual({ name: 'Wi-Fi', address: '192.168.1.35' });
     expect(bestLanAddress([])).toBeNull();
+  });
+});
+
+describe('deriveBaseUrl', () => {
+  it('prefers an explicit PUBLIC_URL override', () => {
+    expect(
+      deriveBaseUrl({ publicUrl: 'https://game.example.com', protocol: 'http', host: '10.2.3.4:3001' }),
+    ).toBe('https://game.example.com');
+  });
+
+  it('derives the request origin when behind a proxy', () => {
+    expect(
+      deriveBaseUrl({ protocol: 'https', host: 'ipl-auction.onrender.com' }),
+    ).toBe('https://ipl-auction.onrender.com');
+  });
+
+  it('keeps the LAN host that the visitor actually typed', () => {
+    expect(
+      deriveBaseUrl({ protocol: 'http', host: '192.168.1.35:3001' }),
+    ).toBe('http://192.168.1.35:3001');
+    expect(
+      deriveBaseUrl({ protocol: 'http', host: 'localhost:3001' }),
+    ).toBe('http://localhost:3001');
+  });
+
+  it('returns null without a host and never mangles garbage', () => {
+    expect(deriveBaseUrl({ protocol: 'https', host: '' })).toBeNull();
+    expect(deriveBaseUrl({ protocol: 'ftp', host: 'x' })).toBeNull();
+    expect(deriveBaseUrl({ publicUrl: 'not a url', protocol: 'http', host: '192.168.1.35' })).toBe(
+      'http://192.168.1.35',
+    );
   });
 });
