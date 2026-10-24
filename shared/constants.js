@@ -30,6 +30,20 @@ export const COLOR_IDS = PALETTE.map((c) => c.id);
 
 export const BID_RAISE_LAKH = [1, 25, 50, 100];
 
+// The tournament rng is a 32-bit mulberry32 (`seed >>> 0`): every seed ≥ 2^32
+// would silently alias a smaller seed, so both ends validate to 1..2^32-2.
+export const SEED_MIN = 1;
+export const SEED_MAX = 2 ** 32 - 2;
+
+export function parseSeed(rawValue) {
+  if (rawValue == null || String(rawValue).trim() === '') return { seed: null };
+  const parsed = Number(String(rawValue).trim());
+  if (!Number.isInteger(parsed) || parsed < SEED_MIN || parsed > SEED_MAX) {
+    return { error: `Seed must be an integer from ${SEED_MIN} to ${SEED_MAX}.` };
+  }
+  return { seed: parsed };
+}
+
 function trimNumber(value) {
   return Number.isInteger(value) ? String(value) : value.toFixed(2).replace(/\.?0+$/, '');
 }
@@ -40,6 +54,17 @@ export function formatLakh(lakh) {
   return `\u20b9${lakh} L`;
 }
 
+export function formatRaiseLakh(lakh) {
+  return lakh >= 100 ? `${trimNumber(lakh / 100)} Cr` : `${lakh} L`;
+}
+
 export function normalizeTeamName(name) {
   return String(name ?? '').trim().replace(/\s+/g, ' ');
+}
+
+export function normalizeRoomCode(raw) {
+  return String(raw ?? '')
+    .toUpperCase()
+    .replace(new RegExp(`[^${CODE_ALPHABET}]`, 'g'), '')
+    .slice(0, CODE_LENGTH);
 }
