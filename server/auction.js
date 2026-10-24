@@ -278,12 +278,13 @@ export function fillSquads(room, playersById) {
         const player = playersById.get(playerId);
         if (!player) return false;
         if (player.overseas && team.overseasCount >= MAX_OVERSEAS) return false;
+        if (team.purseLakh < player.basePriceLakh) return false;
         return true;
       });
       if (!candidate) break;
 
       const player = playersById.get(candidate);
-      const price = Math.min(player.basePriceLakh, Math.max(0, team.purseLakh));
+      const price = player.basePriceLakh;
       usedIds.add(candidate);
       team.purseLakh -= price;
       team.squad.push({ playerId: player.id, priceLakh: price });
@@ -296,8 +297,12 @@ export function fillSquads(room, playersById) {
     if (touched) teamsTouched += 1;
   }
 
+  const shortTeams = [...room.teams.values()]
+    .filter((team) => team.squad.length < 11)
+    .map((team) => team.id);
+
   auction.unsold = auction.unsold.filter((playerId) => !taken.has(playerId));
-  return { filled, teams: teamsTouched };
+  return { filled: filled, teams: teamsTouched, shortTeams };
 }
 
 export function computeRemaining(auction, now = Date.now()) {
