@@ -2,6 +2,10 @@ import { createRng, randomSeed, runBracket } from './bracket.js';
 
 const BASE_WEIGHTS = { 0: 0.295, 1: 0.325, 2: 0.105, 3: 0.015, 4: 0.14, 6: 0.07, W: 0.05 };
 
+// Minimum bowling rating for a player to count as one of the required five
+// bowling options; below this they are batters fill, flagged via invalidXI.
+const BOWLING_FLOOR = 40;
+
 const PHASE_MULTIPLIERS = {
   powerplay: { 0: 1, 1: 1, 2: 0.9, 3: 0.8, 4: 1.1, 6: 1.2, W: 0.95 },
   middle: { 0: 1.05, 1: 1.1, 2: 1.05, 3: 1.1, 4: 0.85, 6: 0.8, W: 1 },
@@ -53,7 +57,7 @@ export function selectXI(squadPlayers) {
   if (keeper) picked.push(keeper);
 
   const bowlerCandidates = sorted
-    .filter((player) => player.role !== 'WK-Batter')
+    .filter((player) => player.role !== 'WK-Batter' && bowlingSkill(player) >= BOWLING_FLOOR)
     .sort(
       (a, b) =>
         bowlingSkill(b) - bowlingSkill(a) ||
@@ -70,22 +74,29 @@ export function selectXI(squadPlayers) {
     }
   }
 
+  let breachingCapToReachEleven = false;
   for (const player of sorted) {
     if (picked.length >= 11) break;
     if (canAdd(player)) picked.push(player);
   }
-
-  let validXI = picked.length === 11 && overseasCount() <= 4 && Boolean(keeper);
-  if (picked.length < 11) {
-    for (const player of sorted) {
-      if (picked.length >= 11) break;
-      if (!picked.some((existing) => existing.id === player.id)) picked.push(player);
+  // Last resort: field 11 even if the overseas cap must be exceeded. The XI
+  // stays flagged invalid so the scorecard shows the team broken the rule.
+  for (const player of sorted) {
+    if (picked.length >= 11) break;
+    if (!picked.some((existing) => existing.id === player.id)) {
+      picked.push(player);
+      breachingCapToReachEleven = true;
     }
-    validXI = false;
   }
 
-  const xi = picked.slice(0, 11);
-  return { xi, validXI, keeper };
+  let validXI = picked.length === 11 && overseasCount() <= 4 && Boolean(keeper) && bowlersAdded >= 5;
+  const issues = [];
+  if (picked.length !== 11) issues.push(`only ${picked.length} XI slots`);
+  if (bowlersAdded < 5) issues.push('fewer than five genuine bowling options');
+  if (!keeper) issues.push('no keeper');
+  if (breachingCapToReachEleven || overseasCount() > 4) issues.push('overseas limit exceeded');
+
+  return { xi: picked.slice(0, 11), validXI, keeper, issues };
 }
 
 export function buildTeamProfile(team, playersById) {
@@ -100,7 +111,12 @@ export function buildTeamProfile(team, playersById) {
     throw new Error(`${team.teamName} has only ${squadPlayers.length} players. Use Fill squad first.`);
   }
 
-  const { xi, validXI, keeper } = selectXI(squadPlayers);
+  const { xi, validXI, keeper, issues } = selectXI(squadPlayers);
+  if (!validXI) {
+    console.warn(
+      `[sim] ${team.teamName} will simulate with an invalid XI: ${issues.join('; ')}.`,
+    );
+  }
   const battingOrder = [...xi].sort(
     (a, b) =>
       battingSkill(b) - battingSkill(a) ||
@@ -447,7 +463,8 @@ function serializeMatch(match) {
 }
 
 export function simulateTournament(room, playersById, options = {}) {
-  const teams = [...room.teams.values()];
+  const excluded = new Set(options.excludeTeamIds ?? []);
+  const teams = [...room.teams.values()].filter((team) => !excluded.has(team.id));
   if (teams.length < 2) throw new Error('At least two teams are needed to simulate the tournament.');
 
   const profiles = teams.map((team) => buildTeamProfile(team, playersById));
