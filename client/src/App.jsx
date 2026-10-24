@@ -4,12 +4,12 @@ import Home from './components/Home.jsx';
 import Lobby from './components/Lobby.jsx';
 import Results from './components/Results.jsx';
 import { LoadingState, Toast } from './components/ui.jsx';
+import { normalizeRoomCode } from '../../shared/constants.js';
 import { useAuctionSocket } from './lib/socket.js';
 
 function codeFromUrl() {
   try {
-    const raw = new URLSearchParams(window.location.search).get('room') ?? '';
-    return raw.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6);
+    return normalizeRoomCode(new URLSearchParams(window.location.search).get('room') ?? '');
   } catch {
     return '';
   }
