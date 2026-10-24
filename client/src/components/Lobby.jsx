@@ -20,12 +20,15 @@ export default function Lobby({
       .then((response) => (response.ok ? response.json() : null))
       .then((data) => {
         if (active && data?.baseUrl) setLanOrigin(data.baseUrl);
+        else if (active) notify('Invite links may point at this dev port. Use `npm run lan` for LAN play.', 'info');
       })
-      .catch(() => {});
+      .catch(() => {
+        if (active) notify('Invite links may point at this dev port. Use `npm run lan` for LAN play.', 'info');
+      });
     return () => {
       active = false;
     };
-  }, []);
+  }, [notify]);
 
   const { teams, settings, code, hostId } = snapshot;
   const teamCount = teams.length;
@@ -157,7 +160,7 @@ export default function Lobby({
               <p className="settings-label">Auction order</p>
               <p className="settings-copy">Shuffled for this room. Nobody sees the next lot.</p>
             </div>
-            <span className="settings-value">257 lots</span>
+            <span className="settings-value">{settings.lotCount} lots</span>
           </div>
 
           {isHost ? (
