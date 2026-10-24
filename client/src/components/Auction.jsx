@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from 'react';
-import { BID_RAISE_LAKH, formatLakh } from '../../../shared/constants.js';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { BID_RAISE_LAKH, formatLakh, formatRaiseLakh } from '../../../shared/constants.js';
 import {
   formatNumber,
   nationalityLabel,
@@ -10,20 +10,32 @@ import { Button, Dialog, EmptyState, TeamMark } from './ui.jsx';
 
 function useLotClock(auction, timer) {
   const [now, setNow] = useState(Date.now());
-  const [base, setBase] = useState({
-    remainingMs: auction?.remainingMs ?? 0,
-    at: Date.now(),
-  });
+  // Single source of truth: timer events (500ms) drive the countdown while a
+  // lot stays open; the snapshot only adopts the base once per lot transition.
+  // A snapshot adopted on every broadcast could restart the countdown from an
+  // older value and make the clock jump backwards.
+  const [base, setBase] = useState(null);
+  const lotKeyRef = useRef(null);
 
   useEffect(() => {
     const interval = setInterval(() => setNow(Date.now()), 100);
     return () => clearInterval(interval);
   }, []);
 
+  const lotKey = auction?.current?.status
+    ? `${auction.current.status}:${auction.current.player?.id ?? ''}`
+    : null;
+
   useEffect(() => {
-    if (!auction) return;
-    setBase({ remainingMs: auction.remainingMs, at: Date.now() });
-  }, [auction?.remainingMs, auction?.phase, auction?.paused, auction?.current?.player?.id]);
+    if (!auction || !lotKey) {
+      lotKeyRef.current = null;
+      return;
+    }
+    if (lotKeyRef.current !== lotKey) {
+      lotKeyRef.current = lotKey;
+      setBase({ remainingMs: auction.remainingMs, at: Date.now() });
+    }
+  }, [auction, lotKey]);
 
   useEffect(() => {
     if (!timer) return;
@@ -33,6 +45,7 @@ function useLotClock(auction, timer) {
   if (!auction) return 0;
   if (auction.paused) return auction.remainingMs;
   if (auction.phase !== 'open') return 0;
+  if (!base) return auction.remainingMs ?? 0;
   return Math.max(0, base.remainingMs - (now - base.at));
 }
 
@@ -94,7 +107,7 @@ function PlayerStats({ current }) {
   );
 }
 
-function SquadDialog({ team, onClose }) {
+function SquadDialog({ team, settings, onClose }) {
   if (!team) return null;
   const spent = team.squad.reduce((sum, player) => sum + player.priceLakh, 0);
   return (
@@ -105,7 +118,8 @@ function SquadDialog({ team, onClose }) {
           {formatLakh(team.purseLakh)} left
         </p>
         <p>
-          {team.overseasCount} overseas. Squad limit is 25, with 8 overseas.
+          {team.overseasCount} overseas. Squad limit is {settings?.maxSquad}, with{' '}
+          {settings?.maxOverseas} overseas.
         </p>
       </div>
       {team.squad.length === 0 ? (
@@ -340,7 +354,7 @@ export default function Auction({
                 {current.leaderId ? (
                   <div>
                     <span className="label">Raise options</span>
-                    <span className="bid-next">+{BID_RAISE_LAKH.map((raise) => (raise >= 100 ? `${raise / 100} Cr` : `${raise} L`)).join(' · ')}</span>
+                    <span className="bid-next">+{BID_RAISE_LAKH.map(formatRaiseLakh).join(' · ')}</span>
                   </div>
                 ) : null}
               </div>
@@ -496,7 +510,7 @@ export default function Auction({
              : `${player.name} is on the block. The bid is ${formatLakh(current.currentBidLakh)}.`}
       </p>
 
-      <SquadDialog team={squadTeam} onClose={() => setSquadTeamId(null)} />
+      <SquadDialog team={squadTeam} settings={settings} onClose={() => setSquadTeamId(null)} />
 
       <Dialog
         open={confirmEnd}
