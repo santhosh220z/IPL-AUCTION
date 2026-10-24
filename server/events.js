@@ -4,6 +4,7 @@ import {
   MIN_PLAYERS_TO_START,
   ROOM_IDLE_MS,
   TIMER_OPTIONS,
+  parseSeed,
 } from '../shared/constants.js';
 import {
   advanceAuction,
@@ -449,22 +450,28 @@ export function registerSocketHandlers(io) {
     }
 
     const shortTeams = [...room.teams.values()].filter((team) => team.squad.length < 11);
-    if (shortTeams.length > 0) {
+    if (room.teams.size - shortTeams.length < 2) {
       reply(ack, {
         ok: false,
-        error: `Fill squad first for: ${shortTeams.map((team) => team.teamName).join(', ')}.`,
+        error:
+          shortTeams.length === room.teams.size
+            ? `No complete squads. Fill squads first (${shortTeams.map((team) => team.teamName).join(', ')}).`
+            : `Below 11 players: ${shortTeams.map((team) => team.teamName).join(', ')}. Two complete squads are needed.`,
       });
       return;
     }
 
-    const seed = payload.seed == null ? undefined : Number(payload.seed);
-    if (seed != null && !Number.isInteger(seed)) {
-      reply(ack, { ok: false, error: 'Seed must be an integer.' });
+    const seed = parseSeed(payload.seed);
+    if (seed.error) {
+      reply(ack, { ok: false, error: seed.error });
       return;
     }
 
     try {
-      const result = simulateTournament(room, playersById, { seed });
+      const result = simulateTournament(room, playersById, {
+        seed,
+        excludeTeamIds: shortTeams.map((team) => team.id),
+      });
       room.simulation = result;
       touch(room);
       broadcastRoom(room);
