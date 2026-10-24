@@ -263,6 +263,7 @@ export function snapshotRoom(room, playersById, viewerId) {
       maxSquad: MAX_SQUAD,
       maxOverseas: MAX_OVERSEAS,
       maxTeams: MAX_TEAMS,
+      lotCount: playersById.size,
     },
     teams,
     auction: auction
