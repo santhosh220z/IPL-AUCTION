@@ -67,7 +67,7 @@ export function Swatches({ value, onChange, name = 'accent', disabledColors = []
   );
 }
 
-export function colorHex(colorId) {
+function colorHex(colorId) {
   return PALETTE.find((color) => color.id === colorId)?.hex ?? '#1e5b3f';
 }
 
