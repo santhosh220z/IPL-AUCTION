@@ -5,7 +5,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import express from 'express';
 import { Server } from 'socket.io';
-import { bestLanAddress, lanAddresses } from './lan.js';
+import { deriveBaseUrl, lanAddresses } from './lan.js';
 import { registerSocketHandlers } from './events.js';
 import { rooms } from './rooms.js';
 
@@ -15,22 +15,25 @@ const CLIENT_DIST = path.join(ROOT, 'client', 'dist');
 const INDEX_HTML = path.join(CLIENT_DIST, 'index.html');
 const PORT = Number(process.env.PORT) || 3001;
 const lanList = lanAddresses(os.networkInterfaces());
-const lanBest = bestLanAddress(lanList);
-
-function lanBaseUrl() {
-  const best = bestLanAddress(lanAddresses(os.networkInterfaces()));
-  return best ? `http://${best.address}:${PORT}` : null;
-}
 
 const app = express();
 app.disable('x-powered-by');
+// Behind a PaaS TLS proxy the Host/X-Forwarded-Proto headers describe the
+// public origin; direct requests (LAN) keep the host the visitor typed.
+app.set('trust proxy', 1);
 
 app.get('/api/health', (_request, response) => {
   response.json({ ok: true, rooms: rooms.size, uptimeSec: Math.round(process.uptime()) });
 });
 
-app.get('/api/lan', (_request, response) => {
-  response.json({ baseUrl: lanBaseUrl() });
+app.get('/api/lan', (request, response) => {
+  response.json({
+    baseUrl: deriveBaseUrl({
+      publicUrl: process.env.PUBLIC_URL,
+      protocol: request.protocol,
+      host: request.get('host'),
+    }),
+  });
 });
 
 if (fs.existsSync(INDEX_HTML)) {
