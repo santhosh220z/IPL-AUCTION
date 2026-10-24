@@ -16,3 +16,15 @@ export function lanAddresses(interfaces) {
 export function bestLanAddress(list) {
   return list[0] ?? null;
 }
+
+// The invite-link base must match how the visitor actually reached the server:
+// a LAN teammate's request says http://192.168.x.x:3001, a public host behind a
+// TLS proxy says https://<app>.onrender.com. PUBLIC_URL only wins when it parses.
+export function deriveBaseUrl({ publicUrl, protocol, host }) {
+  if (publicUrl && URL.canParse(publicUrl) && /^https?:$/.test(new URL(publicUrl).protocol)) {
+    return publicUrl.replace(/\/+$/, '');
+  }
+  if (!host || !protocol) return null;
+  if (protocol !== 'http' && protocol !== 'https') return null;
+  return `${protocol}://${host}`;
+}
