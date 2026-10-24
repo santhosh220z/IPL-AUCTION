@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { PALETTE } from '../../../shared/constants.js';
+import { PALETTE, normalizeRoomCode } from '../../../shared/constants.js';
 import { Button, Field, Swatches } from './ui.jsx';
 
 const TEAM_NAME_RE = /^[A-Za-z0-9][A-Za-z0-9 .'&_-]*$/;
@@ -152,9 +152,7 @@ export default function Home({ initialCode = '', onCreate, onJoin, onPreview }) 
                 id="room-code"
                 className="input code-input"
                 value={code}
-                onChange={(event) =>
-                  setCode(event.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6))
-                }
+                onChange={(event) => setCode(normalizeRoomCode(event.target.value))}
                 autoComplete="off"
                 autoCapitalize="characters"
                 spellCheck="false"
