@@ -52,8 +52,10 @@ On Windows, use `npm.cmd` if PowerShell blocks `npm.ps1`.
 - Simulation is a seeded statistical Monte Carlo ball-by-ball model. XI:
   11 players, max 4 overseas, at least 1 keeper, at least 5 bowling
   options; bowlers max 4 overs. Ties go to a super over.
-- Bracket size is the next power of two; byes fill the gap; random draw.
-  Semifinal losers play a 3rd-place match; 2-team rooms play only a final.
+- Bracket size is the next power of two; byes fill the gap; random draw, and the
+  shuffle is re-drawn for every round (by design: fresh pairings each round, no
+  fixed bracket skeleton). Semifinal losers play a 3rd-place match; 2-team rooms
+  play only a final.
 - If a squad has fewer than 11 players at auction end, the host's "Fill
   squad" action adds the cheapest unsold players at base price.
 
@@ -80,6 +82,17 @@ everything at once.
   and `writing-plans` for multi-step work.
 - Navigation: use `graphify` only after `graphify-out/` exists. It has not
   been generated yet, so do not query it today.
+
+## Deploy
+
+Same codebase serves LAN nights (`npm run lan` on a PC) and internet play.
+Internet host: Render free tier per `render.yaml` (WebSocket-capable, Node).
+`/api/lan` returns the origin the visitor actually used (`trust proxy` reads
+`X-Forwarded-Proto`); `PUBLIC_URL` overrides when a host proxies badly.
+Free instances sleep ~15 min idle and restart with empty rooms - rooms are
+in-memory, so a woken server answers `room:rejoin` with "room no longer
+exists" and the client toasts that. Never add docker/CDN config; `npm
+start` alone serves the built client, `/api`, and Socket.IO.
 
 ## Verify
 
