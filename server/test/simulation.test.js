@@ -1,5 +1,5 @@
 import fs from 'node:fs';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { createRng } from '../bracket.js';
 import {
   buildTeamProfile,
@@ -56,6 +56,65 @@ describe('XI selection', () => {
     expect(selectXI(pool).xi.map((player) => player.id)).toEqual(
       selectXI(pool).xi.map((player) => player.id),
     );
+  });
+});
+
+describe('XI rule degradation', () => {
+  function synth(id, opts = {}) {
+    const { role = 'Batter', bowling = 10, batting = 50, overall = 50, overseas = false } = opts;
+    return {
+      id,
+      name: id,
+      role,
+      overseas,
+      basePriceLakh: 100,
+      ratings: { overall, batting, bowling },
+    };
+  }
+
+  it('does not count pure batters as bowling options', () => {
+    const squad = Array.from({ length: 11 }, (_, i) => synth(`b${i}`));
+    const { xi, validXI, keeper } = selectXI(squad);
+    expect(xi).toHaveLength(11);
+    expect(keeper).toBeNull();
+    expect(validXI).toBe(false);
+  });
+
+  it('flags an XI that must breach the overseas cap to reach eleven', () => {
+    const squad = [
+      synth('wk', { role: 'WK-Batter', overseas: true }),
+      ...Array.from({ length: 10 }, (_, i) => synth(`o${i}`, { overseas: true, bowling: 80 })),
+    ];
+    const { xi, validXI } = selectXI(squad);
+    expect(xi).toHaveLength(11);
+    expect(xi.filter((player) => player.overseas)).toHaveLength(11);
+    expect(validXI).toBe(false);
+  });
+
+  it('keeps an XI with a keeper only flagged when no WK exists', () => {
+    const squad = Array.from({ length: 10 }, (_, i) => synth(`p${i}`));
+    squad.push(synth('wk', { role: 'WK-Batter', bowling: 10 }));
+    const { xi, validXI, keeper } = selectXI(squad);
+    expect(xi).toHaveLength(11);
+    expect(keeper?.id).toBe('wk');
+    // Only one real bowling option (none of the others qualifies) -> still invalid.
+    expect(validXI).toBe(false);
+  });
+
+  it('warns loudly when a team simulates outside the XI rules', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const squad = Array.from({ length: 11 }, (_, i) => synth(`b${i}`));
+    const team = {
+      id: 't1',
+      teamName: 'Alpha',
+      color: 'azure',
+      squad: squad.map((player) => ({ playerId: player.id, priceLakh: 100 })),
+    };
+    const players = new Map(squad.map((player) => [player.id, player]));
+    buildTeamProfile(team, players);
+    expect(warn).toHaveBeenCalledTimes(1);
+    expect(warn.mock.calls[0][0]).toMatch(/invalid XI/i);
+    warn.mockRestore();
   });
 });
 
@@ -156,5 +215,23 @@ describe('tournament simulation', () => {
     expect(first.rounds.map((round) => round.matches.map((match) => match.resultText))).toEqual(
       second.rounds.map((round) => round.matches.map((match) => match.resultText)),
     );
+  });
+
+  it('excludes disqualified short teams from the tournament', () => {
+    const room = makeRoom(['MI', 'CSK', 'RCB', 'GT']);
+    const excludedId = room.teams.keys().next().value;
+    const result = simulateTournament(room, playersById, { seed: 123, excludeTeamIds: [excludedId] });
+
+    expect(result.teams).toHaveLength(3);
+    expect(result.teams.map((team) => team.id)).not.toContain(excludedId);
+    expect(result.matchCount).toBe(2);
+  });
+
+  it('refuses to run when fewer than two teams remain', () => {
+    const room = makeRoom(['MI', 'CSK']);
+    const ids = [...room.teams.keys()];
+    expect(() =>
+      simulateTournament(room, playersById, { seed: 1, excludeTeamIds: ids }),
+    ).toThrow(/at least two/i);
   });
 });
