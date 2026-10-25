@@ -9,7 +9,7 @@ import {
   simulateTournament,
 } from '../simulation.js';
 
-const data = JSON.parse(fs.readFileSync(new URL('../data/players.json', import.meta.url), 'utf8'));
+const data = JSON.parse(fs.readFileSync(new URL('../../all_players.json', import.meta.url), 'utf8'));
 const playersById = new Map(data.players.map((player) => [player.id, player]));
 
 function squadFor(abbr) {
