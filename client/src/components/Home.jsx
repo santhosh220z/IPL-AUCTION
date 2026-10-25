@@ -91,7 +91,7 @@ export default function Home({ initialCode = '', onCreate, onJoin, onPreview }) 
           <div className="rule-block">
             <h2>The auction</h2>
             <ul className="rule-list">
-              <li>257 players from the IPL 2026 squads.</li>
+              <li>325 players: IPL 2026 squads plus auction pool.</li>
               <li>₹120 Cr per team. 25-player squad. 8 overseas maximum.</li>
               <li>One lot at a time, timed on the server, with every bid on screen.</li>
               <li>Host can pause, skip a lot, or end the auction early.</li>
@@ -109,7 +109,7 @@ export default function Home({ initialCode = '', onCreate, onJoin, onPreview }) 
         </div>
 
         <p className="home-footnote">
-          Ratings and base prices are generated from the IPL delivery data. No account is needed.
+           Ratings and base prices are generated from IPL delivery data; auction-pool players use supplied ratings. No account is needed.
           Your team is restored when you refresh.
         </p>
       </section>
