@@ -1,0 +1,4201 @@
+{
+  "meta": {
+    "name": "new_players",
+    "description": "Standalone, game-ready auction pool additions. Keep as a fallback if merging into server/data/players.json conflicts.",
+    "source": "cricket auction players data - Sheet1.csv",
+    "comparedAgainst": {
+      "file": "server/data/players.json",
+      "generatedAt": "2026-10-24T14:18:39.321Z",
+      "playerCount": 257
+    },
+    "generatedAt": "2026-10-25T11:58:25.941Z",
+    "sourceRowCount": 200,
+    "alreadyInAppExactCount": 127,
+    "nameMismatchCount": 73,
+    "playerCount": 68,
+    "aliasCount": 4,
+    "excludedCount": 1,
+    "overseasCount": 48,
+    "indianCount": 20,
+    "mergedPlayerCount": 325,
+    "mergedOverseasCount": 130,
+    "setCounts": {
+      "Marquee": 9,
+      "Batters": 27,
+      "Wicketkeepers": 10,
+      "All-rounders": 10,
+      "Bowlers": 12
+    },
+    "priceCounts": {
+      "140": 33,
+      "150": 16,
+      "160": 12,
+      "170": 2,
+      "180": 5
+    },
+    "ratingsNote": "Batting and bowling use the CSV overall skill ratings; fielding uses the current per-role median; overall uses the build script role weights.",
+    "statsNote": "No 2026 deliveries exist for these players, so stats are empty and the auction UI shows its no-delivery note.",
+    "merge": true,
+    "mergeNote": "Append players after the existing squad pipeline. Aliases are reuse-or-add. Excluded players are skipped unless promoted."
+  },
+  "players": [
+    {
+      "id": "ab-de-villiers",
+      "name": "AB de Villiers",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "WK-Batter",
+      "overseas": true,
+      "captain": false,
+      "basePriceLakh": 180,
+      "set": "Marquee",
+      "ratings": {
+        "batting": 95,
+        "bowling": 33,
+        "fielding": 53,
+        "overall": 83.5
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "AB de Villiers",
+        "csvSet": "MQ2",
+        "csvCountry": "South Africa",
+        "country": "South Africa",
+        "csvBasePrice": 180,
+        "csvBatting": 95,
+        "csvBowling": 33,
+        "csvOverall": 95
+      }
+    },
+    {
+      "id": "chris-gayle",
+      "name": "Chris Gayle",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "Batter",
+      "overseas": true,
+      "captain": false,
+      "basePriceLakh": 180,
+      "set": "Marquee",
+      "ratings": {
+        "batting": 90,
+        "bowling": 45,
+        "fielding": 50.6,
+        "overall": 82.5
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Chris Gayle",
+        "csvSet": "MQ1",
+        "csvCountry": "West Indies",
+        "country": "West Indies",
+        "csvBasePrice": 180,
+        "csvBatting": 90,
+        "csvBowling": 45,
+        "csvOverall": 90
+      }
+    },
+    {
+      "id": "lasith-malinga",
+      "name": "Lasith Malinga",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "Bowler",
+      "overseas": true,
+      "captain": false,
+      "basePriceLakh": 170,
+      "set": "Marquee",
+      "ratings": {
+        "batting": 43,
+        "bowling": 94,
+        "fielding": 47.7,
+        "overall": 81.7
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Lasith Malinga",
+        "csvSet": "MQ2",
+        "csvCountry": "Sri Lanka",
+        "country": "Sri Lanka",
+        "csvBasePrice": 170,
+        "csvBatting": 43,
+        "csvBowling": 94,
+        "csvOverall": 94
+      }
+    },
+    {
+      "id": "andre-russell",
+      "name": "Andre Russell",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "All-rounder",
+      "overseas": true,
+      "captain": false,
+      "basePriceLakh": 180,
+      "set": "Marquee",
+      "ratings": {
+        "batting": 85,
+        "bowling": 81,
+        "fielding": 50.6,
+        "overall": 79.9
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Andre Russell",
+        "csvSet": "MQ2",
+        "csvCountry": "West Indies",
+        "country": "West Indies",
+        "csvBasePrice": 180,
+        "csvBatting": 85,
+        "csvBowling": 81,
+        "csvOverall": 85
+      }
+    },
+    {
+      "id": "david-warner",
+      "name": "David Warner",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "Batter",
+      "overseas": true,
+      "captain": false,
+      "basePriceLakh": 180,
+      "set": "Marquee",
+      "ratings": {
+        "batting": 89,
+        "bowling": 23,
+        "fielding": 50.6,
+        "overall": 79.9
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "David Warner",
+        "csvSet": "MQ2",
+        "csvCountry": "Australia",
+        "country": "Australia",
+        "csvBasePrice": 180,
+        "csvBatting": 89,
+        "csvBowling": 23,
+        "csvOverall": 89
+      }
+    },
+    {
+      "id": "ben-stokes",
+      "name": "Ben Stokes",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "All-rounder",
+      "overseas": true,
+      "captain": false,
+      "basePriceLakh": 160,
+      "set": "Marquee",
+      "ratings": {
+        "batting": 83,
+        "bowling": 78,
+        "fielding": 50.6,
+        "overall": 77.7
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Ben Stokes",
+        "csvSet": "MQ2",
+        "csvCountry": "England",
+        "country": "England",
+        "csvBasePrice": 160,
+        "csvBatting": 83,
+        "csvBowling": 78,
+        "csvOverall": 83
+      }
+    },
+    {
+      "id": "dwayne-bravo",
+      "name": "Dwayne Bravo",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "All-rounder",
+      "overseas": true,
+      "captain": false,
+      "basePriceLakh": 160,
+      "set": "Marquee",
+      "ratings": {
+        "batting": 76,
+        "bowling": 77,
+        "fielding": 50.6,
+        "overall": 73.9
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Dwayne Bravo",
+        "csvSet": "MQ2",
+        "csvCountry": "West Indies",
+        "country": "West Indies",
+        "csvBasePrice": 160,
+        "csvBatting": 76,
+        "csvBowling": 77,
+        "csvOverall": 77
+      }
+    },
+    {
+      "id": "kieron-pollard",
+      "name": "Kieron Pollard",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "All-rounder",
+      "overseas": true,
+      "captain": false,
+      "basePriceLakh": 160,
+      "set": "Marquee",
+      "ratings": {
+        "batting": 88,
+        "bowling": 62,
+        "fielding": 50.6,
+        "overall": 73.3
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Kieron Pollard",
+        "csvSet": "MQ1",
+        "csvCountry": "West Indies",
+        "country": "West Indies",
+        "csvBasePrice": 160,
+        "csvBatting": 88,
+        "csvBowling": 62,
+        "csvOverall": 88
+      }
+    },
+    {
+      "id": "glenn-maxwell",
+      "name": "Glenn Maxwell",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "All-rounder",
+      "overseas": true,
+      "captain": false,
+      "basePriceLakh": 180,
+      "set": "Marquee",
+      "ratings": {
+        "batting": 84,
+        "bowling": 61,
+        "fielding": 50.6,
+        "overall": 71
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Glenn Maxwell",
+        "csvSet": "MQ1",
+        "csvCountry": "Australia",
+        "country": "Australia",
+        "csvBasePrice": 180,
+        "csvBatting": 84,
+        "csvBowling": 61,
+        "csvOverall": 84
+      }
+    },
+    {
+      "id": "harry-brook",
+      "name": "Harry Brook",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "Batter",
+      "overseas": true,
+      "captain": false,
+      "basePriceLakh": 150,
+      "set": "Batters",
+      "ratings": {
+        "batting": 89,
+        "bowling": 43,
+        "fielding": 50.6,
+        "overall": 81.5
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Harry Brook",
+        "csvSet": "BAT2",
+        "csvCountry": "England",
+        "country": "England",
+        "csvBasePrice": 150,
+        "csvBatting": 89,
+        "csvBowling": 43,
+        "csvOverall": 89
+      }
+    },
+    {
+      "id": "charith-asalanka",
+      "name": "Charith Asalanka",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "Batter",
+      "overseas": true,
+      "captain": false,
+      "basePriceLakh": 150,
+      "set": "Batters",
+      "ratings": {
+        "batting": 86,
+        "bowling": 65,
+        "fielding": 50.6,
+        "overall": 80.8
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Charith Asalanka",
+        "csvSet": "BAT5",
+        "csvCountry": "Sri Lanka",
+        "country": "Sri Lanka",
+        "csvBasePrice": 150,
+        "csvBatting": 86,
+        "csvBowling": 65,
+        "csvOverall": 86
+      }
+    },
+    {
+      "id": "ashton-turner",
+      "name": "Ashton Turner",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "Batter",
+      "overseas": true,
+      "captain": false,
+      "basePriceLakh": 140,
+      "set": "Batters",
+      "ratings": {
+        "batting": 85,
+        "bowling": 70,
+        "fielding": 50.6,
+        "overall": 80.4
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Ashton Turner",
+        "csvSet": "BAT3",
+        "csvCountry": "Australia",
+        "country": "Australia",
+        "csvBasePrice": 140,
+        "csvBatting": 85,
+        "csvBowling": 70,
+        "csvOverall": 85
+      }
+    },
+    {
+      "id": "salman-nizar",
+      "name": "Salman Nizar",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "Batter",
+      "overseas": false,
+      "captain": false,
+      "basePriceLakh": 140,
+      "set": "Batters",
+      "ratings": {
+        "batting": 87,
+        "bowling": 43,
+        "fielding": 50.6,
+        "overall": 79.8
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Salman Nizar",
+        "csvSet": "BAT6",
+        "csvCountry": "India",
+        "country": "India",
+        "csvBasePrice": 140,
+        "csvBatting": 87,
+        "csvBowling": 43,
+        "csvOverall": 87
+      }
+    },
+    {
+      "id": "karan-lal",
+      "name": "Karan Lal",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "Batter",
+      "overseas": false,
+      "captain": false,
+      "basePriceLakh": 140,
+      "set": "Batters",
+      "ratings": {
+        "batting": 82,
+        "bowling": 75,
+        "fielding": 50.6,
+        "overall": 78.3
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Karan Lal",
+        "csvSet": "BAT6",
+        "csvCountry": "India",
+        "country": "India",
+        "csvBasePrice": 140,
+        "csvBatting": 82,
+        "csvBowling": 75,
+        "csvOverall": 82
+      }
+    },
+    {
+      "id": "faf-du-plessis",
+      "name": "Faf du Plessis",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "Batter",
+      "overseas": true,
+      "captain": false,
+      "basePriceLakh": 160,
+      "set": "Batters",
+      "ratings": {
+        "batting": 87,
+        "bowling": 23,
+        "fielding": 50.6,
+        "overall": 78.2
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Faf du Plessis",
+        "csvSet": "BAT1",
+        "csvCountry": "South Africa",
+        "country": "South Africa",
+        "csvBasePrice": 160,
+        "csvBatting": 87,
+        "csvBowling": 23,
+        "csvOverall": 87
+      }
+    },
+    {
+      "id": "mahipal-lomror",
+      "name": "Mahipal Lomror",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "Batter",
+      "overseas": false,
+      "captain": false,
+      "basePriceLakh": 140,
+      "set": "Batters",
+      "ratings": {
+        "batting": 83,
+        "bowling": 64,
+        "fielding": 50.6,
+        "overall": 78.2
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Mahipal Lomror",
+        "csvSet": "BAT3",
+        "csvCountry": "India",
+        "country": "India",
+        "csvBasePrice": 140,
+        "csvBatting": 83,
+        "csvBowling": 64,
+        "csvOverall": 83
+      }
+    },
+    {
+      "id": "brandon-king",
+      "name": "Brandon King",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "Batter",
+      "overseas": true,
+      "captain": false,
+      "basePriceLakh": 150,
+      "set": "Batters",
+      "ratings": {
+        "batting": 87,
+        "bowling": 15,
+        "fielding": 50.6,
+        "overall": 77.6
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Brandon King",
+        "csvSet": "BAT5",
+        "csvCountry": "West Indies",
+        "country": "West Indies",
+        "csvBasePrice": 150,
+        "csvBatting": 87,
+        "csvBowling": 15,
+        "csvOverall": 87
+      }
+    },
+    {
+      "id": "dawid-malan",
+      "name": "Dawid Malan",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "Batter",
+      "overseas": true,
+      "captain": false,
+      "basePriceLakh": 140,
+      "set": "Batters",
+      "ratings": {
+        "batting": 84,
+        "bowling": 38,
+        "fielding": 50.6,
+        "overall": 77
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "David Malan",
+        "csvSet": "BAT3",
+        "csvCountry": "India",
+        "country": "England",
+        "csvBasePrice": 140,
+        "csvBatting": 84,
+        "csvBowling": 38,
+        "csvOverall": 84
+      }
+    },
+    {
+      "id": "pukhraj-mann",
+      "name": "Pukhraj Mann",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "Batter",
+      "overseas": false,
+      "captain": false,
+      "basePriceLakh": 140,
+      "set": "Batters",
+      "ratings": {
+        "batting": 82,
+        "bowling": 59,
+        "fielding": 50.6,
+        "overall": 77
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Pukhraj Mann",
+        "csvSet": "BAT6",
+        "csvCountry": "India",
+        "country": "India",
+        "csvBasePrice": 140,
+        "csvBatting": 82,
+        "csvBowling": 59,
+        "csvOverall": 82
+      }
+    },
+    {
+      "id": "swastik-chikara",
+      "name": "Swastik Chikara",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "Batter",
+      "overseas": false,
+      "captain": false,
+      "basePriceLakh": 140,
+      "set": "Batters",
+      "ratings": {
+        "batting": 83,
+        "bowling": 43,
+        "fielding": 50.6,
+        "overall": 76.6
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Swastik Chikara",
+        "csvSet": "BAT5",
+        "csvCountry": "India",
+        "country": "India",
+        "csvBasePrice": 140,
+        "csvBatting": 83,
+        "csvBowling": 43,
+        "csvOverall": 83
+      }
+    },
+    {
+      "id": "andre-siddarth",
+      "name": "Andre Siddarth",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "Batter",
+      "overseas": false,
+      "captain": false,
+      "basePriceLakh": 140,
+      "set": "Batters",
+      "ratings": {
+        "batting": 83,
+        "bowling": 38,
+        "fielding": 50.6,
+        "overall": 76.2
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Andre Siddarth",
+        "csvSet": "BAT6",
+        "csvCountry": "India",
+        "country": "India",
+        "csvBasePrice": 140,
+        "csvBatting": 83,
+        "csvBowling": 38,
+        "csvOverall": 83
+      }
+    },
+    {
+      "id": "l-r-chethan",
+      "name": "L. R. Chethan",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "Batter",
+      "overseas": false,
+      "captain": false,
+      "basePriceLakh": 140,
+      "set": "Batters",
+      "ratings": {
+        "batting": 85,
+        "bowling": 15,
+        "fielding": 50.6,
+        "overall": 76
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "L. R. Chethan",
+        "csvSet": "BAT6",
+        "csvCountry": "India",
+        "country": "India",
+        "csvBasePrice": 140,
+        "csvBatting": 85,
+        "csvBowling": 15,
+        "csvOverall": 85
+      }
+    },
+    {
+      "id": "jake-fraser-mcgurk",
+      "name": "Jake Fraser-McGurk",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "Batter",
+      "overseas": true,
+      "captain": false,
+      "basePriceLakh": 160,
+      "set": "Batters",
+      "ratings": {
+        "batting": 82,
+        "bowling": 43,
+        "fielding": 50.6,
+        "overall": 75.7
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Jake Fraser-McGurk",
+        "csvSet": "BAT2",
+        "csvCountry": "Australia",
+        "country": "Australia",
+        "csvBasePrice": 160,
+        "csvBatting": 82,
+        "csvBowling": 43,
+        "csvOverall": 82
+      }
+    },
+    {
+      "id": "abhinav-manohar",
+      "name": "Abhinav Manohar",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "Batter",
+      "overseas": false,
+      "captain": false,
+      "basePriceLakh": 140,
+      "set": "Batters",
+      "ratings": {
+        "batting": 83,
+        "bowling": 28,
+        "fielding": 50.6,
+        "overall": 75.4
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Abhinav Manohar",
+        "csvSet": "BAT3",
+        "csvCountry": "India",
+        "country": "India",
+        "csvBasePrice": 140,
+        "csvBatting": 83,
+        "csvBowling": 28,
+        "csvOverall": 83
+      }
+    },
+    {
+      "id": "joe-clarke",
+      "name": "Joe Clarke",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "Batter",
+      "overseas": true,
+      "captain": false,
+      "basePriceLakh": 140,
+      "set": "Batters",
+      "ratings": {
+        "batting": 84,
+        "bowling": 15,
+        "fielding": 50.6,
+        "overall": 75.1
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Joe Clarke",
+        "csvSet": "BAT4",
+        "csvCountry": "England",
+        "country": "England",
+        "csvBasePrice": 140,
+        "csvBatting": 84,
+        "csvBowling": 15,
+        "csvOverall": 84
+      }
+    },
+    {
+      "id": "rassie-van-der-dussen",
+      "name": "Rassie van der Dussen",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "Batter",
+      "overseas": true,
+      "captain": false,
+      "basePriceLakh": 150,
+      "set": "Batters",
+      "ratings": {
+        "batting": 83,
+        "bowling": 25,
+        "fielding": 50.6,
+        "overall": 75.1
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Rassie van der Dussen",
+        "csvSet": "BAT4",
+        "csvCountry": "South Africa",
+        "country": "South Africa",
+        "csvBasePrice": 150,
+        "csvBatting": 83,
+        "csvBowling": 25,
+        "csvOverall": 83
+      }
+    },
+    {
+      "id": "sediqullah-atal",
+      "name": "Sediqullah Atal",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "Batter",
+      "overseas": true,
+      "captain": false,
+      "basePriceLakh": 140,
+      "set": "Batters",
+      "ratings": {
+        "batting": 84,
+        "bowling": 15,
+        "fielding": 50.6,
+        "overall": 75.1
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Sediqullah Atal",
+        "csvSet": "BAT4",
+        "csvCountry": "Afghanistan",
+        "country": "Afghanistan",
+        "csvBasePrice": 140,
+        "csvBatting": 84,
+        "csvBowling": 15,
+        "csvOverall": 84
+      }
+    },
+    {
+      "id": "tom-kohler-cadmore",
+      "name": "Tom Kohler-Cadmore",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "Batter",
+      "overseas": true,
+      "captain": false,
+      "basePriceLakh": 150,
+      "set": "Batters",
+      "ratings": {
+        "batting": 84,
+        "bowling": 15,
+        "fielding": 50.6,
+        "overall": 75.1
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Tom Kohler-Cadmore",
+        "csvSet": "BAT4",
+        "csvCountry": "England",
+        "country": "England",
+        "csvBasePrice": 150,
+        "csvBatting": 84,
+        "csvBowling": 15,
+        "csvOverall": 84
+      }
+    },
+    {
+      "id": "avishka-fernando",
+      "name": "Avishka Fernando",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "Batter",
+      "overseas": true,
+      "captain": false,
+      "basePriceLakh": 140,
+      "set": "Batters",
+      "ratings": {
+        "batting": 83,
+        "bowling": 20,
+        "fielding": 50.6,
+        "overall": 74.7
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Avishka Fernando",
+        "csvSet": "BAT5",
+        "csvCountry": "Sri Lanka",
+        "country": "Sri Lanka",
+        "csvBasePrice": 140,
+        "csvBatting": 83,
+        "csvBowling": 20,
+        "csvOverall": 83
+      }
+    },
+    {
+      "id": "nikhil-gangta",
+      "name": "Nikhil Gangta",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "Batter",
+      "overseas": false,
+      "captain": false,
+      "basePriceLakh": 140,
+      "set": "Batters",
+      "ratings": {
+        "batting": 80,
+        "bowling": 48,
+        "fielding": 50.6,
+        "overall": 74.5
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Nikhil Gangta",
+        "csvSet": "BAT6",
+        "csvCountry": "India",
+        "country": "India",
+        "csvBasePrice": 140,
+        "csvBatting": 80,
+        "csvBowling": 48,
+        "csvOverall": 80
+      }
+    },
+    {
+      "id": "ricky-bhui",
+      "name": "Ricky Bhui",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "Batter",
+      "overseas": false,
+      "captain": false,
+      "basePriceLakh": 140,
+      "set": "Batters",
+      "ratings": {
+        "batting": 83,
+        "bowling": 15,
+        "fielding": 50.6,
+        "overall": 74.3
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Ricky Bhui",
+        "csvSet": "BAT5",
+        "csvCountry": "India",
+        "country": "India",
+        "csvBasePrice": 140,
+        "csvBatting": 83,
+        "csvBowling": 15,
+        "csvOverall": 83
+      }
+    },
+    {
+      "id": "kane-williamson",
+      "name": "Kane Williamson",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "Batter",
+      "overseas": true,
+      "captain": false,
+      "basePriceLakh": 140,
+      "set": "Batters",
+      "ratings": {
+        "batting": 81,
+        "bowling": 28,
+        "fielding": 50.6,
+        "overall": 73.7
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Kane Williamson",
+        "csvSet": "BAT1",
+        "csvCountry": "New Zealand",
+        "country": "New Zealand",
+        "csvBasePrice": 140,
+        "csvBatting": 81,
+        "csvBowling": 28,
+        "csvOverall": 81
+      }
+    },
+    {
+      "id": "anmolpreet-singh",
+      "name": "Anmolpreet Singh",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "Batter",
+      "overseas": false,
+      "captain": false,
+      "basePriceLakh": 140,
+      "set": "Batters",
+      "ratings": {
+        "batting": 82,
+        "bowling": 15,
+        "fielding": 50.6,
+        "overall": 73.5
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Anmolpreet Singh",
+        "csvSet": "BAT5",
+        "csvCountry": "India",
+        "country": "India",
+        "csvBasePrice": 140,
+        "csvBatting": 82,
+        "csvBowling": 15,
+        "csvOverall": 82
+      }
+    },
+    {
+      "id": "manan-vohra",
+      "name": "Manan Vohra",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "Batter",
+      "overseas": false,
+      "captain": false,
+      "basePriceLakh": 140,
+      "set": "Batters",
+      "ratings": {
+        "batting": 82,
+        "bowling": 15,
+        "fielding": 50.6,
+        "overall": 73.5
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Manan Vohra",
+        "csvSet": "BAT5",
+        "csvCountry": "India",
+        "country": "India",
+        "csvBasePrice": 140,
+        "csvBatting": 82,
+        "csvBowling": 15,
+        "csvOverall": 82
+      }
+    },
+    {
+      "id": "ibrahim-zadran",
+      "name": "Ibrahim Zadran",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "Batter",
+      "overseas": true,
+      "captain": false,
+      "basePriceLakh": 150,
+      "set": "Batters",
+      "ratings": {
+        "batting": 81,
+        "bowling": 20,
+        "fielding": 50.6,
+        "overall": 73.1
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Ibrahim Zadran",
+        "csvSet": "BAT4",
+        "csvCountry": "Afghanistan",
+        "country": "Afghanistan",
+        "csvBasePrice": 150,
+        "csvBatting": 81,
+        "csvBowling": 20,
+        "csvOverall": 81
+      }
+    },
+    {
+      "id": "shaik-rasheed",
+      "name": "Shaik Rasheed",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "Batter",
+      "overseas": false,
+      "captain": false,
+      "basePriceLakh": 140,
+      "set": "Batters",
+      "ratings": {
+        "batting": 81,
+        "bowling": 20,
+        "fielding": 50.6,
+        "overall": 73.1
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Shaik Rasheed",
+        "csvSet": "BAT4",
+        "csvCountry": "India",
+        "country": "India",
+        "csvBasePrice": 140,
+        "csvBatting": 81,
+        "csvBowling": 20,
+        "csvOverall": 81
+      }
+    },
+    {
+      "id": "jonny-bairstow",
+      "name": "Jonny Bairstow",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "WK-Batter",
+      "overseas": true,
+      "captain": false,
+      "basePriceLakh": 150,
+      "set": "Wicketkeepers",
+      "ratings": {
+        "batting": 87,
+        "bowling": 15,
+        "fielding": 53,
+        "overall": 76.6
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Jonny Bairstow",
+        "csvSet": "WK1",
+        "csvCountry": "England",
+        "country": "England",
+        "csvBasePrice": 150,
+        "csvBatting": 87,
+        "csvBowling": 15,
+        "csvOverall": 87
+      }
+    },
+    {
+      "id": "matthew-wade",
+      "name": "Matthew Wade",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "WK-Batter",
+      "overseas": true,
+      "captain": false,
+      "basePriceLakh": 140,
+      "set": "Wicketkeepers",
+      "ratings": {
+        "batting": 86,
+        "bowling": 28,
+        "fielding": 53,
+        "overall": 76.5
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Matthew Wade",
+        "csvSet": "WK2",
+        "csvCountry": "Australia",
+        "country": "Australia",
+        "csvBasePrice": 140,
+        "csvBatting": 86,
+        "csvBowling": 28,
+        "csvOverall": 86
+      }
+    },
+    {
+      "id": "kusal-mendis",
+      "name": "Kusal Mendis",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "WK-Batter",
+      "overseas": true,
+      "captain": false,
+      "basePriceLakh": 140,
+      "set": "Wicketkeepers",
+      "ratings": {
+        "batting": 85,
+        "bowling": 25,
+        "fielding": 53,
+        "overall": 75.6
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Kusal Mendis",
+        "csvSet": "WK2",
+        "csvCountry": "Sri Lanka",
+        "country": "Sri Lanka",
+        "csvBasePrice": 140,
+        "csvBatting": 85,
+        "csvBowling": 25,
+        "csvOverall": 85
+      }
+    },
+    {
+      "id": "ben-mcdermott",
+      "name": "Ben McDermott",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "WK-Batter",
+      "overseas": true,
+      "captain": false,
+      "basePriceLakh": 150,
+      "set": "Wicketkeepers",
+      "ratings": {
+        "batting": 85,
+        "bowling": 15,
+        "fielding": 53,
+        "overall": 75.1
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Ben McDermott",
+        "csvSet": "WK3",
+        "csvCountry": "Australia",
+        "country": "Australia",
+        "csvBasePrice": 150,
+        "csvBatting": 85,
+        "csvBowling": 15,
+        "csvOverall": 85
+      }
+    },
+    {
+      "id": "devon-conway",
+      "name": "Devon Conway",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "WK-Batter",
+      "overseas": true,
+      "captain": false,
+      "basePriceLakh": 150,
+      "set": "Wicketkeepers",
+      "ratings": {
+        "batting": 85,
+        "bowling": 15,
+        "fielding": 53,
+        "overall": 75.1
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Devon Conway",
+        "csvSet": "WK1",
+        "csvCountry": "New Zealand",
+        "country": "New Zealand",
+        "csvBasePrice": 150,
+        "csvBatting": 85,
+        "csvBowling": 15,
+        "csvOverall": 85
+      }
+    },
+    {
+      "id": "rahmanullah-gurbaz",
+      "name": "Rahmanullah Gurbaz",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "WK-Batter",
+      "overseas": true,
+      "captain": false,
+      "basePriceLakh": 160,
+      "set": "Wicketkeepers",
+      "ratings": {
+        "batting": 85,
+        "bowling": 15,
+        "fielding": 53,
+        "overall": 75.1
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Rahmanullah Gurbaz",
+        "csvSet": "WK2",
+        "csvCountry": "Afghanistan",
+        "country": "Afghanistan",
+        "csvBasePrice": 160,
+        "csvBatting": 85,
+        "csvBowling": 15,
+        "csvOverall": 85
+      }
+    },
+    {
+      "id": "alex-carey",
+      "name": "Alex Carey",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "WK-Batter",
+      "overseas": true,
+      "captain": false,
+      "basePriceLakh": 160,
+      "set": "Wicketkeepers",
+      "ratings": {
+        "batting": 81,
+        "bowling": 15,
+        "fielding": 53,
+        "overall": 72.1
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Alex Carey",
+        "csvSet": "WK2",
+        "csvCountry": "Australia",
+        "country": "Australia",
+        "csvBasePrice": 160,
+        "csvBatting": 81,
+        "csvBowling": 15,
+        "csvOverall": 81
+      }
+    },
+    {
+      "id": "narayan-jagadeesan",
+      "name": "Narayan Jagadeesan",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "WK-Batter",
+      "overseas": false,
+      "captain": false,
+      "basePriceLakh": 140,
+      "set": "Wicketkeepers",
+      "ratings": {
+        "batting": 81,
+        "bowling": 15,
+        "fielding": 53,
+        "overall": 72.1
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Narayan Jagadeesan",
+        "csvSet": "WK3",
+        "csvCountry": "India",
+        "country": "India",
+        "csvBasePrice": 140,
+        "csvBatting": 81,
+        "csvBowling": 15,
+        "csvOverall": 81
+      }
+    },
+    {
+      "id": "tom-latham",
+      "name": "Tom Latham",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "WK-Batter",
+      "overseas": true,
+      "captain": false,
+      "basePriceLakh": 140,
+      "set": "Wicketkeepers",
+      "ratings": {
+        "batting": 79,
+        "bowling": 20,
+        "fielding": 53,
+        "overall": 70.9
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Tom Latham",
+        "csvSet": "WK2",
+        "csvCountry": "New Zealand",
+        "country": "New Zealand",
+        "csvBasePrice": 140,
+        "csvBatting": 79,
+        "csvBowling": 20,
+        "csvOverall": 79
+      }
+    },
+    {
+      "id": "ks-bharat",
+      "name": "KS Bharat",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "WK-Batter",
+      "overseas": false,
+      "captain": false,
+      "basePriceLakh": 140,
+      "set": "Wicketkeepers",
+      "ratings": {
+        "batting": 78,
+        "bowling": 15,
+        "fielding": 53,
+        "overall": 69.9
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "KS Bharat",
+        "csvSet": "WK3",
+        "csvCountry": "India",
+        "country": "India",
+        "csvBasePrice": 140,
+        "csvBatting": 78,
+        "csvBowling": 15,
+        "csvOverall": 78
+      }
+    },
+    {
+      "id": "sikandar-raza",
+      "name": "Sikandar Raza",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "All-rounder",
+      "overseas": true,
+      "captain": false,
+      "basePriceLakh": 150,
+      "set": "All-rounders",
+      "ratings": {
+        "batting": 87,
+        "bowling": 77,
+        "fielding": 50.6,
+        "overall": 79.2
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Sikandar Raza",
+        "csvSet": "ALR3",
+        "csvCountry": "Zimbabwe",
+        "country": "Zimbabwe",
+        "csvBasePrice": 150,
+        "csvBatting": 87,
+        "csvBowling": 77,
+        "csvOverall": 87
+      }
+    },
+    {
+      "id": "aaron-hardie",
+      "name": "Aaron Hardie",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "All-rounder",
+      "overseas": true,
+      "captain": false,
+      "basePriceLakh": 160,
+      "set": "All-rounders",
+      "ratings": {
+        "batting": 85,
+        "bowling": 79,
+        "fielding": 50.6,
+        "overall": 79
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Aaron Hardie",
+        "csvSet": "ALR4",
+        "csvCountry": "Australia",
+        "country": "Australia",
+        "csvBasePrice": 160,
+        "csvBatting": 85,
+        "csvBowling": 79,
+        "csvOverall": 85
+      }
+    },
+    {
+      "id": "kyle-mayers",
+      "name": "Kyle Mayers",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "All-rounder",
+      "overseas": true,
+      "captain": false,
+      "basePriceLakh": 150,
+      "set": "All-rounders",
+      "ratings": {
+        "batting": 85,
+        "bowling": 79,
+        "fielding": 50.6,
+        "overall": 79
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Kyle Mayers",
+        "csvSet": "ALR4",
+        "csvCountry": "West Indies",
+        "country": "West Indies",
+        "csvBasePrice": 150,
+        "csvBatting": 85,
+        "csvBowling": 79,
+        "csvOverall": 85
+      }
+    },
+    {
+      "id": "wiaan-mulder",
+      "name": "Wiaan Mulder",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "All-rounder",
+      "overseas": true,
+      "captain": false,
+      "basePriceLakh": 140,
+      "set": "All-rounders",
+      "ratings": {
+        "batting": 81,
+        "bowling": 80,
+        "fielding": 50.6,
+        "overall": 77.5
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Wiaan Mulder",
+        "csvSet": "ALR2",
+        "csvCountry": "South Africa",
+        "country": "South Africa",
+        "csvBasePrice": 140,
+        "csvBatting": 81,
+        "csvBowling": 80,
+        "csvOverall": 81
+      }
+    },
+    {
+      "id": "chris-green",
+      "name": "Chris Green",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "All-rounder",
+      "overseas": true,
+      "captain": false,
+      "basePriceLakh": 140,
+      "set": "All-rounders",
+      "ratings": {
+        "batting": 77,
+        "bowling": 82,
+        "fielding": 50.6,
+        "overall": 76.5
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Chris Green",
+        "csvSet": "ALR4",
+        "csvCountry": "Australia",
+        "country": "Australia",
+        "csvBasePrice": 140,
+        "csvBatting": 77,
+        "csvBowling": 82,
+        "csvOverall": 82
+      }
+    },
+    {
+      "id": "michael-bracewell",
+      "name": "Michael Bracewell",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "All-rounder",
+      "overseas": true,
+      "captain": false,
+      "basePriceLakh": 140,
+      "set": "All-rounders",
+      "ratings": {
+        "batting": 84,
+        "bowling": 74,
+        "fielding": 50.6,
+        "overall": 76.5
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Michael Bracewell",
+        "csvSet": "ALR2",
+        "csvCountry": "New Zealand",
+        "country": "New Zealand",
+        "csvBasePrice": 140,
+        "csvBatting": 84,
+        "csvBowling": 74,
+        "csvOverall": 84
+      }
+    },
+    {
+      "id": "moeen-ali",
+      "name": "Moeen Ali",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "All-rounder",
+      "overseas": true,
+      "captain": false,
+      "basePriceLakh": 140,
+      "set": "All-rounders",
+      "ratings": {
+        "batting": 83,
+        "bowling": 72,
+        "fielding": 50.6,
+        "overall": 75.1
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Moeen Ali",
+        "csvSet": "ALR1",
+        "csvCountry": "England",
+        "country": "England",
+        "csvBasePrice": 140,
+        "csvBatting": 83,
+        "csvBowling": 72,
+        "csvOverall": 83
+      }
+    },
+    {
+      "id": "ravichandran-ashwin",
+      "name": "Ravichandran Ashwin",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "All-rounder",
+      "overseas": false,
+      "captain": false,
+      "basePriceLakh": 160,
+      "set": "All-rounders",
+      "ratings": {
+        "batting": 72,
+        "bowling": 80,
+        "fielding": 50.6,
+        "overall": 73.2
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Ravichandran Ashwin",
+        "csvSet": "ALR3",
+        "csvCountry": "India",
+        "country": "India",
+        "csvBasePrice": 160,
+        "csvBatting": 72,
+        "csvBowling": 80,
+        "csvOverall": 80
+      }
+    },
+    {
+      "id": "daryl-mitchell",
+      "name": "Daryl Mitchell",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "All-rounder",
+      "overseas": true,
+      "captain": false,
+      "basePriceLakh": 160,
+      "set": "All-rounders",
+      "ratings": {
+        "batting": 86,
+        "bowling": 58,
+        "fielding": 50.6,
+        "overall": 70.7
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Daryl Mitchell",
+        "csvSet": "ALR2",
+        "csvCountry": "New Zealand",
+        "country": "New Zealand",
+        "csvBasePrice": 160,
+        "csvBatting": 86,
+        "csvBowling": 58,
+        "csvOverall": 86
+      }
+    },
+    {
+      "id": "vijay-shankar",
+      "name": "Vijay Shankar",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "All-rounder",
+      "overseas": false,
+      "captain": false,
+      "basePriceLakh": 140,
+      "set": "All-rounders",
+      "ratings": {
+        "batting": 81,
+        "bowling": 61,
+        "fielding": 50.6,
+        "overall": 69.6
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Vijay Shankar",
+        "csvSet": "ALR3",
+        "csvCountry": "India",
+        "country": "India",
+        "csvBasePrice": 140,
+        "csvBatting": 81,
+        "csvBowling": 61,
+        "csvOverall": 81
+      }
+    },
+    {
+      "id": "alzarri-joseph",
+      "name": "Alzarri Joseph",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "Bowler",
+      "overseas": true,
+      "captain": false,
+      "basePriceLakh": 150,
+      "set": "Bowlers",
+      "ratings": {
+        "batting": 59,
+        "bowling": 90,
+        "fielding": 47.7,
+        "overall": 81.1
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Alzarri Joseph",
+        "csvSet": "BOL5",
+        "csvCountry": "West Indies",
+        "country": "West Indies",
+        "csvBasePrice": 150,
+        "csvBatting": 59,
+        "csvBowling": 90,
+        "csvOverall": 90
+      }
+    },
+    {
+      "id": "gerald-coetzee",
+      "name": "Gerald Coetzee",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "Bowler",
+      "overseas": true,
+      "captain": false,
+      "basePriceLakh": 170,
+      "set": "Bowlers",
+      "ratings": {
+        "batting": 63,
+        "bowling": 88,
+        "fielding": 47.7,
+        "overall": 80.2
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Gerald Coetzee",
+        "csvSet": "BOL2",
+        "csvCountry": "South Africa",
+        "country": "South Africa",
+        "csvBasePrice": 170,
+        "csvBatting": 63,
+        "csvBowling": 88,
+        "csvOverall": 88
+      }
+    },
+    {
+      "id": "umesh-yadav",
+      "name": "Umesh Yadav",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "Bowler",
+      "overseas": false,
+      "captain": false,
+      "basePriceLakh": 140,
+      "set": "Bowlers",
+      "ratings": {
+        "batting": 60,
+        "bowling": 88,
+        "fielding": 47.7,
+        "overall": 79.8
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Umesh Yadav",
+        "csvSet": "BOL4",
+        "csvCountry": "India",
+        "country": "India",
+        "csvBasePrice": 140,
+        "csvBatting": 60,
+        "csvBowling": 88,
+        "csvOverall": 88
+      }
+    },
+    {
+      "id": "adam-zampa",
+      "name": "Adam Zampa",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "Bowler",
+      "overseas": true,
+      "captain": false,
+      "basePriceLakh": 150,
+      "set": "Bowlers",
+      "ratings": {
+        "batting": 41,
+        "bowling": 91,
+        "fielding": 47.7,
+        "overall": 79.2
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Adam Zampa",
+        "csvSet": "BOL1",
+        "csvCountry": "Australia",
+        "country": "Australia",
+        "csvBasePrice": 150,
+        "csvBatting": 41,
+        "csvBowling": 91,
+        "csvOverall": 91
+      }
+    },
+    {
+      "id": "richard-gleeson",
+      "name": "Richard Gleeson",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "Bowler",
+      "overseas": true,
+      "captain": false,
+      "basePriceLakh": 150,
+      "set": "Bowlers",
+      "ratings": {
+        "batting": 30,
+        "bowling": 90,
+        "fielding": 47.7,
+        "overall": 76.8
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Richard Gleeson",
+        "csvSet": "BOL4",
+        "csvCountry": "England",
+        "country": "England",
+        "csvBasePrice": 150,
+        "csvBatting": 30,
+        "csvBowling": 90,
+        "csvOverall": 90
+      }
+    },
+    {
+      "id": "mujeeb-ur-rahman",
+      "name": "Mujeeb Ur Rahman",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "Bowler",
+      "overseas": true,
+      "captain": false,
+      "basePriceLakh": 160,
+      "set": "Bowlers",
+      "ratings": {
+        "batting": 39,
+        "bowling": 88,
+        "fielding": 47.7,
+        "overall": 76.6
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Mujeeb Ur Rahman",
+        "csvSet": "BOL4",
+        "csvCountry": "Afghanistan",
+        "country": "Afghanistan",
+        "csvBasePrice": 160,
+        "csvBatting": 39,
+        "csvBowling": 88,
+        "csvOverall": 88
+      }
+    },
+    {
+      "id": "fazalhaq-farooqi",
+      "name": "Fazalhaq Farooqi",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "Bowler",
+      "overseas": true,
+      "captain": false,
+      "basePriceLakh": 150,
+      "set": "Bowlers",
+      "ratings": {
+        "batting": 36,
+        "bowling": 88,
+        "fielding": 47.7,
+        "overall": 76.2
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Fazalhaq Farooqi",
+        "csvSet": "BOL5",
+        "csvCountry": "Afghanistan",
+        "country": "Afghanistan",
+        "csvBasePrice": 150,
+        "csvBatting": 36,
+        "csvBowling": 88,
+        "csvOverall": 88
+      }
+    },
+    {
+      "id": "maheesh-theekshana",
+      "name": "Maheesh Theekshana",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "Bowler",
+      "overseas": true,
+      "captain": false,
+      "basePriceLakh": 140,
+      "set": "Bowlers",
+      "ratings": {
+        "batting": 41,
+        "bowling": 87,
+        "fielding": 47.7,
+        "overall": 76.2
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Maheesh Theekshana",
+        "csvSet": "BOL2",
+        "csvCountry": "Sri Lanka",
+        "country": "Sri Lanka",
+        "csvBasePrice": 140,
+        "csvBatting": 41,
+        "csvBowling": 87,
+        "csvOverall": 87
+      }
+    },
+    {
+      "id": "gudakesh-motie",
+      "name": "Gudakesh Motie",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "Bowler",
+      "overseas": true,
+      "captain": false,
+      "basePriceLakh": 150,
+      "set": "Bowlers",
+      "ratings": {
+        "batting": 60,
+        "bowling": 81,
+        "fielding": 47.7,
+        "overall": 74.5
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Gudakesh Motie",
+        "csvSet": "BOL4",
+        "csvCountry": "West Indies",
+        "country": "West Indies",
+        "csvBasePrice": 150,
+        "csvBatting": 60,
+        "csvBowling": 81,
+        "csvOverall": 81
+      }
+    },
+    {
+      "id": "simarjeet-singh",
+      "name": "Simarjeet Singh",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "Bowler",
+      "overseas": false,
+      "captain": false,
+      "basePriceLakh": 140,
+      "set": "Bowlers",
+      "ratings": {
+        "batting": 35,
+        "bowling": 86,
+        "fielding": 47.7,
+        "overall": 74.5
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Simarjeet Singh",
+        "csvSet": "BOL4",
+        "csvCountry": "India",
+        "country": "India",
+        "csvBasePrice": 140,
+        "csvBatting": 35,
+        "csvBowling": 86,
+        "csvOverall": 86
+      }
+    },
+    {
+      "id": "chetan-sakariya",
+      "name": "Chetan Sakariya",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "Bowler",
+      "overseas": false,
+      "captain": false,
+      "basePriceLakh": 140,
+      "set": "Bowlers",
+      "ratings": {
+        "batting": 42,
+        "bowling": 84,
+        "fielding": 47.7,
+        "overall": 74.1
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Chetan Sakariya",
+        "csvSet": "BOL4",
+        "csvCountry": "India",
+        "country": "India",
+        "csvBasePrice": 140,
+        "csvBatting": 42,
+        "csvBowling": 84,
+        "csvOverall": 84
+      }
+    },
+    {
+      "id": "naveen-ul-haq",
+      "name": "Naveen ul-Haq",
+      "team": "FA",
+      "teamName": "Free agent",
+      "role": "Bowler",
+      "overseas": true,
+      "captain": false,
+      "basePriceLakh": 160,
+      "set": "Bowlers",
+      "ratings": {
+        "batting": 44,
+        "bowling": 83,
+        "fielding": 47.7,
+        "overall": 73.6
+      },
+      "stats": {
+        "matches": 0,
+        "batting": {
+          "innings": 0,
+          "runs": 0,
+          "balls": 0,
+          "dismissals": 0,
+          "fours": 0,
+          "sixes": 0,
+          "dotBalls": 0,
+          "average": null,
+          "strikeRate": null
+        },
+        "bowling": {
+          "innings": 0,
+          "balls": 0,
+          "runs": 0,
+          "wickets": 0,
+          "dotBalls": 0,
+          "economy": null,
+          "average": null,
+          "strikeRate": null
+        },
+        "fielding": {
+          "catches": 0,
+          "stumpings": 0,
+          "runOuts": 0,
+          "total": 0
+        }
+      },
+      "source": {
+        "csvName": "Naveen ul-Haq",
+        "csvSet": "BOL3",
+        "csvCountry": "Afghanistan",
+        "country": "Afghanistan",
+        "csvBasePrice": 160,
+        "csvBatting": 44,
+        "csvBowling": 83,
+        "csvOverall": 83
+      }
+    }
+  ],
+  "aliases": [
+    {
+      "csvName": "Ravisrinivasan Sai Kishore",
+      "existingName": "Sai Kishore",
+      "existingId": "sai-kishore",
+      "reason": "already-in-app-under-different-spelling",
+      "note": "CSV spelling/abbreviation maps to the existing app player.",
+      "player": {
+        "id": "sai-kishore",
+        "name": "Sai Kishore",
+        "team": "GT",
+        "teamName": "Gujarat Titans",
+        "role": "Bowler",
+        "overseas": false,
+        "captain": false,
+        "basePriceLakh": 30,
+        "set": "Bowlers",
+        "ratings": {
+          "batting": 53,
+          "bowling": 43.6,
+          "fielding": 36.8,
+          "overall": 44.4
+        },
+        "stats": {
+          "matches": 2,
+          "batting": {
+            "innings": 0,
+            "runs": 0,
+            "balls": 0,
+            "dismissals": 0,
+            "fours": 0,
+            "sixes": 0,
+            "dotBalls": 0,
+            "average": null,
+            "strikeRate": null
+          },
+          "bowling": {
+            "innings": 2,
+            "balls": 24,
+            "runs": 46,
+            "wickets": 1,
+            "dotBalls": 6,
+            "economy": 11.5,
+            "average": 46,
+            "strikeRate": 24
+          },
+          "fielding": {
+            "catches": 0,
+            "stumpings": 0,
+            "runOuts": 0,
+            "total": 0
+          }
+        }
+      }
+    },
+    {
+      "csvName": "Vaibhav Suryavanshi",
+      "existingName": "Vaibhav Sooryavanshi",
+      "existingId": "vaibhav-sooryavanshi",
+      "reason": "already-in-app-under-different-spelling",
+      "note": "CSV uses the correct spelling Suryavanshi; the app currently stores Sooryavanshi.",
+      "player": {
+        "id": "vaibhav-sooryavanshi",
+        "name": "Vaibhav Sooryavanshi",
+        "team": "RR",
+        "teamName": "Rajasthan Royals",
+        "role": "Batter",
+        "overseas": false,
+        "captain": false,
+        "basePriceLakh": 200,
+        "set": "Marquee",
+        "ratings": {
+          "batting": 95,
+          "bowling": 46.9,
+          "fielding": 28,
+          "overall": 84.4
+        },
+        "stats": {
+          "matches": 16,
+          "batting": {
+            "innings": 16,
+            "runs": 776,
+            "balls": 327,
+            "dismissals": 16,
+            "fours": 63,
+            "sixes": 72,
+            "dotBalls": 108,
+            "average": 48.5,
+            "strikeRate": 237.3
+          },
+          "bowling": {
+            "innings": 0,
+            "balls": 0,
+            "runs": 0,
+            "wickets": 0,
+            "dotBalls": 0,
+            "economy": null,
+            "average": null,
+            "strikeRate": null
+          },
+          "fielding": {
+            "catches": 2,
+            "stumpings": 0,
+            "runOuts": 0,
+            "total": 2
+          }
+        }
+      }
+    },
+    {
+      "csvName": "Harnoor Pannu",
+      "existingName": "Harnoor Singh",
+      "existingId": "harnoor-singh",
+      "reason": "already-in-app-under-different-spelling",
+      "note": "CSV spelling/abbreviation maps to the existing app player.",
+      "player": {
+        "id": "harnoor-singh",
+        "name": "Harnoor Singh",
+        "team": "PBKS",
+        "teamName": "Punjab Kings",
+        "role": "Batter",
+        "overseas": false,
+        "captain": false,
+        "basePriceLakh": 50,
+        "set": "Batters",
+        "ratings": {
+          "batting": 53,
+          "bowling": 51.9,
+          "fielding": 50.6,
+          "overall": 52.7
+        },
+        "stats": {
+          "matches": 0,
+          "batting": {
+            "innings": 0,
+            "runs": 0,
+            "balls": 0,
+            "dismissals": 0,
+            "fours": 0,
+            "sixes": 0,
+            "dotBalls": 0,
+            "average": null,
+            "strikeRate": null
+          },
+          "bowling": {
+            "innings": 0,
+            "balls": 0,
+            "runs": 0,
+            "wickets": 0,
+            "dotBalls": 0,
+            "economy": null,
+            "average": null,
+            "strikeRate": null
+          },
+          "fielding": {
+            "catches": 0,
+            "stumpings": 0,
+            "runOuts": 0,
+            "total": 0
+          }
+        }
+      }
+    },
+    {
+      "csvName": "R. Smaran",
+      "existingName": "Smaran Ravichandran",
+      "existingId": "smaran-ravichandran",
+      "reason": "already-in-app-under-different-spelling",
+      "note": "CSV spelling/abbreviation maps to the existing app player.",
+      "player": {
+        "id": "smaran-ravichandran",
+        "name": "Smaran Ravichandran",
+        "team": "SRH",
+        "teamName": "Sunrisers Hyderabad",
+        "role": "Batter",
+        "overseas": false,
+        "captain": false,
+        "basePriceLakh": 20,
+        "set": "Batters",
+        "ratings": {
+          "batting": 24.4,
+          "bowling": 48.8,
+          "fielding": 55.8,
+          "overall": 29.5
+        },
+        "stats": {
+          "matches": 4,
+          "batting": {
+            "innings": 4,
+            "runs": 19,
+            "balls": 25,
+            "dismissals": 3,
+            "fours": 3,
+            "sixes": 0,
+            "dotBalls": 15,
+            "average": 6.33,
+            "strikeRate": 76
+          },
+          "bowling": {
+            "innings": 0,
+            "balls": 0,
+            "runs": 0,
+            "wickets": 0,
+            "dotBalls": 0,
+            "economy": null,
+            "average": null,
+            "strikeRate": null
+          },
+          "fielding": {
+            "catches": 2,
+            "stumpings": 0,
+            "runOuts": 0,
+            "total": 2
+          }
+        }
+      }
+    }
+  ],
+  "excluded": [
+    {
+      "csvName": "Dilshan Madushanka",
+      "reason": "excluded-by-current-rules",
+      "note": "Listed in meta.excludedPlayers of players.json, so not part of the current 257-player pool. Promote by moving this player into players.",
+      "player": {
+        "id": "dilshan-madushanka",
+        "name": "Dilshan Madushanka",
+        "team": "FA",
+        "teamName": "Free agent",
+        "role": "Bowler",
+        "overseas": true,
+        "captain": false,
+        "basePriceLakh": 140,
+        "set": "Bowlers",
+        "ratings": {
+          "batting": 34,
+          "bowling": 88,
+          "fielding": 47.7,
+          "overall": 75.9
+        },
+        "stats": {
+          "matches": 0,
+          "batting": {
+            "innings": 0,
+            "runs": 0,
+            "balls": 0,
+            "dismissals": 0,
+            "fours": 0,
+            "sixes": 0,
+            "dotBalls": 0,
+            "average": null,
+            "strikeRate": null
+          },
+          "bowling": {
+            "innings": 0,
+            "balls": 0,
+            "runs": 0,
+            "wickets": 0,
+            "dotBalls": 0,
+            "economy": null,
+            "average": null,
+            "strikeRate": null
+          },
+          "fielding": {
+            "catches": 0,
+            "stumpings": 0,
+            "runOuts": 0,
+            "total": 0
+          }
+        },
+        "source": {
+          "csvName": "Dilshan Madushanka",
+          "csvSet": "BOL5",
+          "csvCountry": "Sri Lanka",
+          "country": "Sri Lanka",
+          "csvBasePrice": 140,
+          "csvBatting": 34,
+          "csvBowling": 88,
+          "csvOverall": 88
+        }
+      }
+    }
+  ]
+}
