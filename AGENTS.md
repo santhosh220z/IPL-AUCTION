@@ -5,14 +5,14 @@ React + Vite client, Node/Express + Socket.IO server, in-memory rooms.
 No login, no bots, no database. Server restart ends active rooms.
 
 `ipl dataset/` is raw input and must not be edited. The generated game
-dataset is `server/data/players.json`, rebuilt by `npm run data:build`.
+dataset is `all_players.json`, rebuilt by `npm run data:build`.
 
 ## Commands
 
 - `npm install` - install client, server, and root dependencies
 - `npm run dev` - server :3001 + Vite :5173 (proxies /socket.io)
 - `npm run lan` - build client, serve on :3001, print the LAN URL
-- `npm run data:build` - rebuild players.json from `ipl dataset/`
+- `npm run data:build` - rebuild all_players.json from `ipl dataset/`
 - `npm test` - Vitest
 - Single test: `npm test -w server -- auction.test -t "raises"`
 
@@ -25,13 +25,14 @@ On Windows, use `npm.cmd` if PowerShell blocks `npm.ps1`.
   matches), `points_table.csv` (mid-season), and `*_stats.csv` (top-15
   snapshot) are partial and contradict deliveries. Never build ratings,
   results, or standings from them.
-- Auction pool comes from `squads.csv`: 257 players. Normalize roles,
-  nationality, and names in the data build script.
+- Auction pool: 257 players from `squads.csv` plus 68 auction-pool players from
+  `new_players.json`; the build writes the merged result to `all_players.json`. Normalize roles, nationality, and names in the data build script.
 - Name aliases live in `scripts/player-aliases.json`; add fixes there, not
   inline. Three delivery players are not in squads and are excluded from
   the auction: Dilshan Madushanka, George Linde, Krish Bhagat.
 - Base prices and ratings are generated from deliveries; never hand-edit
-  `players.json`.
+  `all_players.json`. Auction-pool players use supplied ratings/base prices from
+  `new_players.json`.
 - Money is integer lakhs everywhere (Rs 120 Cr = 12000). Format only at the
   UI edge; never use floating-point crore values.
 
