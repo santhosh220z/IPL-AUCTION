@@ -7,7 +7,7 @@ import { cleanName, normalizeKey, slugify, splitFielders } from './lib/normalize
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, '..');
 const RAW_DIR = path.join(ROOT, 'ipl dataset');
-const OUT_FILE = path.join(ROOT, 'server', 'data', 'players.json');
+const OUT_FILE = path.join(ROOT, 'all_players.json');
 
 const aliases = JSON.parse(fs.readFileSync(path.join(HERE, 'player-aliases.json'), 'utf8'));
 const { teamFixes, playerFixes, deliveryAliases } = aliases;
@@ -371,10 +371,27 @@ for (const player of players) {
   else if (player.role === 'Batter') player.set = 'Batters';
   else if (player.role === 'WK-Batter') player.set = 'Wicketkeepers';
   else if (player.role === 'All-rounder') player.set = 'All-rounders';
-  else player.set = 'Bowlers';
-}
+    else player.set = 'Bowlers';
+  }
 
-players.sort((a, b) => {
+  const squadPlayerCount = players.length;
+  if (squadPlayerCount !== 257) throw new Error(`Expected 257 squad players, got ${squadPlayerCount}`);
+
+  const EXTRA_PLAYERS_PATH = path.join(ROOT, 'new_players.json');
+  let auctionPoolPlayers = [];
+  try {
+    const extra = JSON.parse(fs.readFileSync(EXTRA_PLAYERS_PATH, 'utf8'));
+    if (extra.merge !== false) {
+      auctionPoolPlayers = extra.players.filter((player) => !byName.has(normalizeKey(player.name)));
+      if (auctionPoolPlayers.length > 0) {
+        console.warn(`Merged ${auctionPoolPlayers.length} auction-pool players from new_players.json`);
+      }
+    }
+  } catch {}
+
+  players.push(...auctionPoolPlayers);
+
+  players.sort((a, b) => {
   const setDelta = SET_ORDER.indexOf(a.set) - SET_ORDER.indexOf(b.set);
   if (setDelta !== 0) return setDelta;
   return b.ratings.overall - a.ratings.overall || a.name.localeCompare(b.name);
@@ -399,15 +416,20 @@ const venues = readCsv('venues.csv').map((row) => ({
 }));
 
 const overseasCount = players.filter((player) => player.overseas).length;
-if (players.length !== 257) throw new Error(`Expected 257 players, got ${players.length}`);
+  const expectedPlayerCount = squadPlayerCount + auctionPoolPlayers.length;
+  if (players.length !== expectedPlayerCount) {
+    throw new Error(`Expected ${expectedPlayerCount} players, got ${players.length}`);
+  }
 if (teams.length !== 10) throw new Error(`Expected 10 teams, got ${teams.length}`);
 
 const output = {
   meta: {
     season: 'IPL 2026',
-    source: 'ipl dataset/squads.csv + deliveries.csv (deliveries canonical)',
+    source: 'ipl dataset/squads.csv + deliveries.csv (deliveries canonical) + new_players.json (auction pool)',
     generatedAt: new Date().toISOString(),
     playerCount: players.length,
+    squadPlayerCount,
+    auctionPoolCount: auctionPoolPlayers.length,
     teamCount: teams.length,
     overseasCount,
     excludedPlayers: EXCLUDED_NAMES,
@@ -436,10 +458,10 @@ if (unmatched.size > 0) {
   console.warn(`Unmatched delivery names (${unmatched.size}):`, [...unmatched.entries()].map(([name, count]) => `${name} (${count})`).join(', '));
 }
 
-const priorOnly = players.filter((player) => player.stats.matches === 0);
-if (priorOnly.length > 0) {
-  console.warn(
-    `Squad players with no delivery data - ratings are priors only (${priorOnly.length}):`,
-    priorOnly.map((player) => player.name).join(', '),
-  );
-}
+const priorOnly = players.filter((player) => player.team !== 'FA' && player.stats.matches === 0);
+  if (priorOnly.length > 0) {
+    console.warn(
+      `Squad players with no delivery data - ratings are priors only (${priorOnly.length}):`,
+      priorOnly.map((player) => player.name).join(', '),
+    );
+  }
