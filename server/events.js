@@ -380,25 +380,56 @@ export function registerSocketHandlers(io) {
     reply(ack, { ok: true });
   });
 
-  socket.on('auction:skip', (_rawPayload, ack) => {
-    const context = hostContextFor(socket);
-    if (context.error) {
-      reply(ack, { ok: false, error: context.error });
+  socket.on('auction:skip', (rawPayload, ack) => {
+    const payload = payloadOf(rawPayload);
+    const room = getRoom(payload.code);
+    if (!room) {
+      reply(ack, { ok: false, error: 'Room not found.' });
       return;
     }
-    const { room } = context;
     if (room.state !== 'auction') {
       reply(ack, { ok: false, error: 'The auction is not running.' });
       return;
     }
-    const result = settleCurrent(room, playersById, Date.now(), { forceUnsold: true });
-    if (!result) {
-      reply(ack, { ok: false, error: 'There is no open lot to skip.' });
+    const { team } = contextFor(socket);
+    if (!team) {
+      reply(ack, { ok: false, error: 'You are not in a team.' });
       return;
     }
-    touch(room);
-    scheduleAdvance(room, result.waitMs);
-    reply(ack, { ok: true, kind: result.kind });
+
+    const auction = room.auction;
+    if (!auction || auction.current?.status !== 'open' || auction.phase !== 'open') {
+      reply(ack, { ok: false, error: 'No player is currently on the block.' });
+      return;
+    }
+    if (auction.paused) {
+      reply(ack, { ok: false, error: 'The auction is paused.' });
+      return;
+    }
+
+    // Record this team's skip vote for the current player
+    if (!auction.skipVotes.has(team.id)) {
+      auction.skipVotes.set(team.id, new Set());
+    }
+    auction.skipVotes.get(team.id).add(auction.current.playerId);
+
+    // Check if all teams have voted to skip
+    const allSkipped = [...room.teams.values()].every((t) => {
+      return auction.skipVotes.has(t.id) && auction.skipVotes.get(t.id).has(auction.current.playerId);
+    });
+
+    if (allSkipped) {
+      const result = settleCurrent(room, playersById, Date.now());
+      if (result) {
+        touch(room);
+        broadcastRoom(room);
+      }
+      reply(ack, { ok: true, kind: result.kind, allSkipped: true });
+    } else {
+      touch(room);
+      broadcastRoom(room);
+      reply(ack, { ok: true, allSkipped: false });
+    }
   });
 
   socket.on('auction:end', (_rawPayload, ack) => {

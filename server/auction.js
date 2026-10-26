@@ -20,6 +20,7 @@ export function createAuctionState(playerIds, timerSec) {
     unsold: [],
     soldCount: 0,
     totalCount: playerIds.length,
+    skipVotes: new Map(),
   };
 }
 
@@ -43,6 +44,8 @@ export function beginNextPlayer(room, playersById, now = Date.now()) {
     auction.deadline = 0;
     return null;
   }
+
+  auction.skipVotes.clear();
 
   const playerId = auction.queue[auction.index];
   const player = playersById.get(playerId);
@@ -82,6 +85,10 @@ export function getBidState(room, teamId, playersById, raise) {
   if (!player) return { ok: false, error: 'Player not found.' };
   if (auction.current.leaderId === teamId) return { ok: false, error: 'You are already the highest bidder.' };
 
+  if (auction.skipVotes.has(teamId) && auction.skipVotes.get(teamId).has(auction.current.playerId)) {
+    return { ok: false, error: 'You have already voted to skip this player.' };
+  }
+
   let amount;
   if (auction.current.leaderId == null) {
     amount = auction.current.basePriceLakh;
@@ -108,6 +115,15 @@ export function placeBid(room, teamId, playersById, raise, now = Date.now()) {
 
   const auction = room.auction;
   const current = auction.current;
+
+  // Clear this team's skip vote for the current player since they're bidding
+  if (auction.skipVotes.has(teamId)) {
+    auction.skipVotes.get(teamId).delete(current.playerId);
+    if (auction.skipVotes.get(teamId).size === 0) {
+      auction.skipVotes.delete(teamId);
+    }
+  }
+
   current.leaderId = teamId;
   current.currentBidLakh = check.amount;
   current.bidCount += 1;
@@ -136,6 +152,58 @@ export function settleCurrent(room, playersById, now = Date.now(), options = {})
   const player = playersById.get(current.playerId);
   const forceUnsold = Boolean(options.forceUnsold);
   const leader = !forceUnsold && current.leaderId ? room.teams.get(current.leaderId) : null;
+
+  // Check if all teams have voted to skip this player
+  const skipVotes = auction.skipVotes;
+  const allSkipped = [...room.teams.values()].every((team) => {
+    return skipVotes.has(team.id) && skipVotes.get(team.id).has(current.playerId);
+  });
+
+  if (allSkipped && !forceUnsold) {
+    // All teams skipped - player instantly unsold
+    if (leader && player) {
+      const price = current.currentBidLakh;
+      // Still deduct purse even though no one bid
+      leader.purseLakh -= price;
+      leader.squad.push({ playerId: player.id, priceLakh: price });
+      if (player.overseas) leader.overseasCount += 1;
+      auction.soldCount += 1;
+      const event = {
+        id: `${player.id}:sold:${now}`,
+        type: 'sold',
+        playerId: player.id,
+        teamId: leader.id,
+        priceLakh: price,
+        at: now,
+      };
+      auction.log.push(event);
+      auction.lastEvent = event;
+      current.status = 'sold';
+      auction.phase = 'sold';
+      auction.paused = false;
+      auction.remainingMs = 0;
+      auction.deadline = 0;
+      return { kind: 'sold', event, player, team: leader, priceLakh: price, waitMs: 2600 };
+    }
+    // No leader (no teams), just mark unsold
+    auction.unsold.push(player.id);
+    const event = {
+      id: `${player.id}:unsold:${now}`,
+      type: 'unsold',
+      playerId: player.id,
+      teamId: null,
+      priceLakh: null,
+      at: now,
+    };
+    auction.log.push(event);
+    auction.lastEvent = event;
+    current.status = 'unsold';
+    auction.phase = 'unsold';
+    auction.paused = false;
+    auction.remainingMs = 0;
+    auction.deadline = 0;
+    return { kind: 'unsold', event, player, waitMs: 1300 };
+  }
 
   if (leader && player) {
     const price = current.currentBidLakh;
@@ -225,6 +293,7 @@ export function endAuction(room, playersById) {
   if (auction.current && auction.current.status === 'open') {
     auction.current.status = 'skipped';
   }
+  auction.skipVotes.clear();
   const unsold = new Set(auction.unsold);
   const remainingStart = currentSold ? auction.index + 1 : auction.index;
   for (const playerId of auction.queue.slice(remainingStart)) {

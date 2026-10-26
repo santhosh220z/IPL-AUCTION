@@ -225,15 +225,20 @@ export default function Auction({
         ? 'Not enough purse for the base price.'
         : '');
 
-  async function placeBid(raiseLakh = null) {
-    if (bidPending || bidNote) return;
-    setBidError('');
-    setBidPending(true);
-    const response = await onBid(raiseLakh);
-    setBidPending(false);
+  const hasSkipped = useRef(false);
+  const [skipPending, setSkipPending] = useState(false);
+
+  async function handleSkip() {
+    if (skipPending || !auction?.current) return;
+    setSkipPending(true);
+    const response = await onSkip();
+    setSkipPending(false);
     if (!response.ok) {
-      setBidError(response.error ?? 'The bid was not accepted.');
-      notify(response.error ?? 'The bid was not accepted.', 'error');
+      notify(response.error ?? 'The skip was not recorded.', 'error');
+    } else if (response.allSkipped) {
+      notify(`${player.name} unsold - all teams skipped!`, 'info');
+    } else {
+      notify(`${player.name} skip recorded. You can no longer bid on this player.`, 'info');
     }
   }
 
@@ -417,6 +422,54 @@ export default function Auction({
                         : `Bid ${formatLakh(basePrice)}`}
                 </Button>
               )}
+              <div className="bid-actions">
+                {current.leaderId ? (
+                  <div className="bid-raise-grid">
+                    {raiseButtons.map((button) => (
+                      <Button
+                        key={button.raiseLakh}
+                        variant="accent"
+                        className="bid-raise-btn"
+                        onClick={() => placeBid(button.raiseLakh)}
+                        disabled={Boolean(bidNote) || button.unaffordable || bidPending}
+                        title={
+                          button.unaffordable
+                            ? 'Not enough purse for this bid.'
+                            : undefined
+                        }
+                      >
+                        {bidPending ? '…' : `Bid ${formatLakh(button.amount)}`}
+                      </Button>
+                    ))}
+                  </div>
+                ) : (
+                  <Button
+                    variant="accent"
+                    className="bid-button"
+                    onClick={() => placeBid(null)}
+                    disabled={Boolean(bidNote) || bidPending}
+                  >
+                    {bidPending
+                      ? 'Placing bid...'
+                      : auction.paused
+                        ? 'Auction paused'
+                        : auction.phase !== 'open'
+                          ? 'Lot closed'
+                          : `Bid ${formatLakh(basePrice)}`}
+                  </Button>
+                )}
+                {auction?.current && auction.phase === 'open' && !auction.paused && !isLeader ? (
+                  <Button
+                    variant="quiet"
+                    className="skip-btn"
+                    onClick={handleSkip}
+                    disabled={skipPending}
+                    title="Vote to skip this player"
+                  >
+                    {skipPending ? '…' : 'Skip'}
+                  </Button>
+                ) : null}
+              </div>
               {bidNote ? <p className="action-note">{bidNote}</p> : null}
               {bidError ? (
                 <p className="form-error" role="alert">
