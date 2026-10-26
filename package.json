@@ -15,7 +15,7 @@
     "dev:server": "node --watch server/index.js",
     "dev:client": "npm run dev -w client",
     "build": "npm run build -w client",
-    "start": "node scripts/build-data.mjs && node server/index.js",
+    "start": "node server/index.js",
     "lan": "npm run build && npm run start",
     "data:build": "node scripts/build-data.mjs",
     "test": "npm test -w server"

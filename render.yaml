@@ -4,7 +4,7 @@ services:
     runtime: node
     plan: free
     buildCommand: npm ci && npm run build
-    startCommand: npm run data:build && npm start
+    startCommand: npm start
     healthCheckPath: /api/health
     autoDeploy: true
     # Free instances sleep ~15 min after the last connection and restart with
