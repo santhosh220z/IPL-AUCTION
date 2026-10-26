@@ -458,7 +458,7 @@ export default function Auction({
                           : `Bid ${formatLakh(basePrice)}`}
                   </Button>
                 )}
-                {auction?.current && auction.phase === 'open' && !auction.paused && !isLeader ? (
+                {auction?.current && auction.phase === 'open' && !auction.paused && current.leaderId && !isLeader ? (
                   <Button
                     variant="quiet"
                     className="skip-btn"
