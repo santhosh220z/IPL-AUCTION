@@ -153,14 +153,20 @@ export function settleCurrent(room, playersById, now = Date.now(), options = {})
   const forceUnsold = Boolean(options.forceUnsold);
   const leader = !forceUnsold && current.leaderId ? room.teams.get(current.leaderId) : null;
 
-  // Check if all teams have voted to skip this player
+  // Check if all relevant teams have voted to skip this player:
+  // If a leader exists, check if all other teams have skipped (sold instantly).
+  // If no leader exists, check if all teams have skipped (unsold instantly).
   const skipVotes = auction.skipVotes;
-  const allSkipped = [...room.teams.values()].every((team) => {
-    return skipVotes.has(team.id) && skipVotes.get(team.id).has(current.playerId);
-  });
+  const targetTeams = leader
+    ? [...room.teams.values()].filter((team) => team.id !== leader.id)
+    : [...room.teams.values()];
+  const allSkipped =
+    targetTeams.length > 0 &&
+    targetTeams.every((team) => {
+      return skipVotes.has(team.id) && skipVotes.get(team.id).has(current.playerId);
+    });
 
   if (allSkipped && !forceUnsold) {
-    // All teams skipped - player instantly unsold
     if (leader && player) {
       const price = current.currentBidLakh;
       // Still deduct purse even though no one bid

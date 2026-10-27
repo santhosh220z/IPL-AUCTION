@@ -167,6 +167,28 @@ describe('auction bidding', () => {
     expect(room.auction.skipVotes.size).toBe(0);
     expect(getBidState(room, t1.id, playersById, 1).ok).toBe(true);
   });
+
+  it('instantly sells player to the current bidder when all other teams skip', () => {
+    const { room, t1, t2, playersById } = makeFixture();
+    beginNextPlayer(room, playersById, 1000);
+    const p1Id = room.auction.current.playerId;
+
+    // t1 bids base price (101)
+    expect(placeBid(room, t1.id, playersById, 1, 2000).ok).toBe(true);
+    expect(room.auction.current.leaderId).toBe(t1.id);
+
+    // t2 (only other team) skips
+    room.auction.skipVotes.set(t2.id, new Set([p1Id]));
+
+    const result = settleCurrent(room, playersById, 3000);
+    expect(result.kind).toBe('sold');
+    expect(result.team.id).toBe(t1.id);
+    expect(result.priceLakh).toBe(101);
+    expect(t1.purseLakh).toBe(12000 - 101);
+    expect(t1.squad).toEqual([{ playerId: p1Id, priceLakh: 101 }]);
+    expect(room.auction.phase).toBe('sold');
+    expect(room.auction.soldCount).toBe(1);
+  });
 });
 
 describe('lot shuffling', () => {

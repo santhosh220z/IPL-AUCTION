@@ -243,6 +243,8 @@ export default function Auction({
       const response = await onBid(raiseLakh);
       if (!response?.ok) {
         setBidError(response?.error ?? 'The bid could not be placed.');
+      } else if (response.instantlySold) {
+        notify(`${player.name} sold to you - all other teams have skipped!`, 'info');
       }
     } catch {
       setBidError('Could not reach the server.');
@@ -262,7 +264,11 @@ export default function Auction({
       } else {
         setLocalSkippedPlayerId(playerId);
         if (response.allSkipped) {
-          notify(`${player.name} unsold - all teams skipped!`, 'info');
+          if (response.kind === 'sold') {
+            notify(`${player.name} sold - all other teams skipped!`, 'info');
+          } else {
+            notify(`${player.name} unsold - all teams skipped!`, 'info');
+          }
         } else {
           notify(`${player.name} skip recorded. You can no longer bid on this player.`, 'info');
         }

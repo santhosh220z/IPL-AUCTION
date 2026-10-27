@@ -346,6 +346,27 @@ export function registerSocketHandlers(io) {
       return;
     }
     touch(room);
+
+    // If all other teams have already skipped, instantly sell to this bidder
+    const otherTeams = [...room.teams.values()].filter((t) => t.id !== team.id);
+    const allOthersSkipped =
+      otherTeams.length > 0 &&
+      otherTeams.every(
+        (t) =>
+          room.auction.skipVotes.has(t.id) &&
+          room.auction.skipVotes.get(t.id).has(room.auction.current.playerId),
+      );
+
+    if (allOthersSkipped) {
+      const settled = settleCurrent(room, playersById, Date.now());
+      if (settled) {
+        touch(room);
+        scheduleAdvance(room, settled.waitMs);
+      }
+      reply(ack, { ok: true, amount: result.amount, instantlySold: true });
+      return;
+    }
+
     broadcastRoom(room);
     reply(ack, { ok: true, amount: result.amount });
   });
@@ -418,10 +439,17 @@ export function registerSocketHandlers(io) {
     }
     auction.skipVotes.get(team.id).add(auction.current.playerId);
 
-    // Check if all teams have voted to skip
-    const allSkipped = [...room.teams.values()].every((t) => {
-      return auction.skipVotes.has(t.id) && auction.skipVotes.get(t.id).has(auction.current.playerId);
-    });
+    // If there is a leader, check if all other teams skipped (sold instantly)
+    // If there is no leader, check if all teams skipped (unsold instantly)
+    const targetTeams = auction.current.leaderId
+      ? [...room.teams.values()].filter((t) => t.id !== auction.current.leaderId)
+      : [...room.teams.values()];
+
+    const allSkipped =
+      targetTeams.length > 0 &&
+      targetTeams.every((t) => {
+        return auction.skipVotes.has(t.id) && auction.skipVotes.get(t.id).has(auction.current.playerId);
+      });
 
     if (allSkipped) {
       const result = settleCurrent(room, playersById, Date.now());
