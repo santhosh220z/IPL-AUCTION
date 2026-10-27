@@ -124,4 +124,27 @@ describe('host promotion and snapshots', () => {
     expect(snapshot.auction.lastEvent.type).toBe('bid');
     rooms.delete(room.code);
   });
+
+  it('reports userSkipped and skipCount in room snapshot', () => {
+    const { room, team } = freshRoom();
+    const joined = joinRoom(room, { teamName: 'Beta', color: 'amber' });
+    expect(joined.ok).toBe(true);
+
+    room.state = 'auction';
+    const playerId = data.players[0].id;
+    room.auction = createAuctionState([playerId], 15);
+    beginNextPlayer(room, playersById, 1000);
+
+    room.auction.skipVotes.set(team.id, new Set([playerId]));
+
+    const hostSnapshot = snapshotRoom(room, playersById, team.id);
+    expect(hostSnapshot.auction.current.userSkipped).toBe(true);
+    expect(hostSnapshot.auction.current.skipCount).toBe(1);
+
+    const guestSnapshot = snapshotRoom(room, playersById, joined.team.id);
+    expect(guestSnapshot.auction.current.userSkipped).toBe(false);
+    expect(guestSnapshot.auction.current.skipCount).toBe(1);
+
+    rooms.delete(room.code);
+  });
 });

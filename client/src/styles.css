@@ -1320,6 +1320,15 @@ a {
   font-size: 0.95rem;
 }
 
+.bid-actions {
+  display: grid;
+  gap: 10px;
+}
+
+.skip-btn {
+  width: 100%;
+}
+
 .result-stamp {
   display: grid;
   gap: 2px;

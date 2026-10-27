@@ -184,9 +184,16 @@ export default function Auction({
   const [squadTeamId, setSquadTeamId] = useState(null);
   const [confirmEnd, setConfirmEnd] = useState(false);
 
+  const [localSkippedPlayerId, setLocalSkippedPlayerId] = useState(null);
+
   useEffect(() => {
     setBidError('');
+    setLocalSkippedPlayerId(null);
   }, [current?.player?.id]);
+
+  const userSkipped = Boolean(
+    current?.userSkipped || (localSkippedPlayerId && localSkippedPlayerId === current?.player?.id),
+  );
 
   const timerSeconds = Math.ceil(remaining / 1000);
   const timerPercent = auction ? Math.min(100, Math.max(0, (remaining / (auction.timerSec * 1000)) * 100)) : 0;
@@ -201,6 +208,7 @@ export default function Auction({
   else if (!auction) bidBlockedReason = 'The auction is not running.';
   else if (auction.paused) bidBlockedReason = 'The auction is paused.';
   else if (auction.phase !== 'open') bidBlockedReason = 'Waiting for the next lot.';
+  else if (userSkipped) bidBlockedReason = 'You voted to skip this player.';
   else if (isLeader) bidBlockedReason = 'You hold the highest bid.';
   else if (squadFull) bidBlockedReason = 'Your squad is full.';
   else if (overseasBlocked) bidBlockedReason = 'Your overseas limit is full.';
@@ -225,20 +233,44 @@ export default function Auction({
         ? 'Not enough purse for the base price.'
         : '');
 
-  const hasSkipped = useRef(false);
   const [skipPending, setSkipPending] = useState(false);
 
+  async function placeBid(raiseLakh) {
+    if (bidPending || !auction?.current || bidBlockedReason) return;
+    setBidPending(true);
+    setBidError('');
+    try {
+      const response = await onBid(raiseLakh);
+      if (!response?.ok) {
+        setBidError(response?.error ?? 'The bid could not be placed.');
+      }
+    } catch {
+      setBidError('Could not reach the server.');
+    } finally {
+      setBidPending(false);
+    }
+  }
+
   async function handleSkip() {
-    if (skipPending || !auction?.current) return;
+    if (skipPending || !auction?.current || userSkipped || isLeader) return;
     setSkipPending(true);
-    const response = await onSkip();
-    setSkipPending(false);
-    if (!response.ok) {
-      notify(response.error ?? 'The skip was not recorded.', 'error');
-    } else if (response.allSkipped) {
-      notify(`${player.name} unsold - all teams skipped!`, 'info');
-    } else {
-      notify(`${player.name} skip recorded. You can no longer bid on this player.`, 'info');
+    const playerId = current?.player?.id;
+    try {
+      const response = await onSkip();
+      if (!response?.ok) {
+        notify(response?.error ?? 'The skip was not recorded.', 'error');
+      } else {
+        setLocalSkippedPlayerId(playerId);
+        if (response.allSkipped) {
+          notify(`${player.name} unsold - all teams skipped!`, 'info');
+        } else {
+          notify(`${player.name} skip recorded. You can no longer bid on this player.`, 'info');
+        }
+      }
+    } catch {
+      notify('Could not reach the server.', 'error');
+    } finally {
+      setSkipPending(false);
     }
   }
 
@@ -387,41 +419,7 @@ export default function Auction({
                 </div>
               </div>
 
-              {current.leaderId ? (
-                <div className="bid-raise-grid">
-                  {raiseButtons.map((button) => (
-                    <Button
-                      key={button.raiseLakh}
-                      variant="accent"
-                      className="bid-raise-btn"
-                      onClick={() => placeBid(button.raiseLakh)}
-                      disabled={Boolean(bidNote) || button.unaffordable || bidPending}
-                      title={
-                        button.unaffordable
-                          ? 'Not enough purse for this bid.'
-                          : undefined
-                      }
-                    >
-                      {bidPending ? '…' : `Bid ${formatLakh(button.amount)}`}
-                    </Button>
-                  ))}
-                </div>
-              ) : (
-                <Button
-                  variant="accent"
-                  className="bid-button"
-                  onClick={() => placeBid(null)}
-                  disabled={Boolean(bidNote) || bidPending}
-                >
-                  {bidPending
-                    ? 'Placing bid...'
-                    : auction.paused
-                      ? 'Auction paused'
-                      : auction.phase !== 'open'
-                        ? 'Lot closed'
-                        : `Bid ${formatLakh(basePrice)}`}
-                </Button>
-              )}
+              
               <div className="bid-actions">
                 {current.leaderId ? (
                   <div className="bid-raise-grid">
@@ -458,17 +456,21 @@ export default function Auction({
                           : `Bid ${formatLakh(basePrice)}`}
                   </Button>
                 )}
-                {auction?.current && auction.phase === 'open' && !auction.paused && current.leaderId && !isLeader ? (
-                  <Button
-                    variant="quiet"
-                    className="skip-btn"
-                    onClick={handleSkip}
-                    disabled={skipPending}
-                    title="Vote to skip this player"
-                  >
-                    {skipPending ? '…' : 'Skip'}
-                  </Button>
-                ) : null}
+                <Button
+                  variant="quiet"
+                  className="skip-btn"
+                  onClick={handleSkip}
+                  disabled={skipPending || userSkipped || isLeader || auction.phase !== 'open' || auction.paused}
+                  title={
+                    userSkipped
+                      ? 'You voted to skip this player'
+                      : isLeader
+                        ? 'You hold the highest bid'
+                        : 'Vote to skip this player'
+                  }
+                >
+                  {skipPending ? '…' : userSkipped ? 'Skipped' : 'Skip'}
+                </Button>
               </div>
               {bidNote ? <p className="action-note">{bidNote}</p> : null}
               {bidError ? (
@@ -512,13 +514,6 @@ export default function Auction({
                   disabled={hostBusy || auction.phase !== 'open'}
                 >
                   {auction.paused ? 'Resume auction' : 'Pause auction'}
-                </Button>
-                <Button
-                  variant="quiet"
-                  onClick={() => hostAction(onSkip, 'The lot was not skipped.')}
-                  disabled={hostBusy || auction.phase !== 'open'}
-                >
-                  Skip player
                 </Button>
                 <Button variant="danger" onClick={() => setConfirmEnd(true)} disabled={hostBusy}>
                   End auction

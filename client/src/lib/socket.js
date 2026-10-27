@@ -238,7 +238,10 @@ export function useAuctionSocket() {
     bid: (raiseLakh) => command('auction:bid', raiseLakh == null ? {} : { raiseLakh }),
     pauseAuction: () => command('auction:pause'),
     resumeAuction: () => command('auction:resume'),
-    skipPlayer: () => command('auction:skip'),
+    skipPlayer: () => {
+      const code = snapshotRef.current?.code;
+      return command('auction:skip', code ? { code } : {});
+    },
     endAuction: () => command('auction:end'),
     fillSquads: () => command('auction:fillSquads'),
     runSimulation: (seed) => command('simulation:run', seed == null ? {} : { seed }),

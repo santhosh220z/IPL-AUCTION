@@ -135,6 +135,38 @@ describe('auction bidding', () => {
     t1.squad = Array.from({ length: 25 }, (_, index) => ({ playerId: `x${index}`, priceLakh: 20 }));
     expect(getBidState(room, t1.id, playersById, 1).error).toMatch(/squad is full/i);
   });
+
+  it('blocks bids from a team that voted to skip the current player', () => {
+    const { room, t1, t2, playersById } = makeFixture();
+    beginNextPlayer(room, playersById, 1000);
+
+    room.auction.skipVotes.set(t1.id, new Set([room.auction.current.playerId]));
+    const bidState = getBidState(room, t1.id, playersById, 1);
+    expect(bidState.ok).toBe(false);
+    expect(bidState.error).toMatch(/voted to skip/i);
+
+    expect(getBidState(room, t2.id, playersById, 1).ok).toBe(true);
+  });
+
+  it('settles as unsold when all teams skip and clears skip votes on advance', () => {
+    const { room, t1, t2, playersById } = makeFixture();
+    beginNextPlayer(room, playersById, 1000);
+    const p1Id = room.auction.current.playerId;
+
+    room.auction.skipVotes.set(t1.id, new Set([p1Id]));
+    room.auction.skipVotes.set(t2.id, new Set([p1Id]));
+
+    const result = settleCurrent(room, playersById, 2000);
+    expect(result.kind).toBe('unsold');
+    expect(room.auction.phase).toBe('unsold');
+    expect(room.auction.unsold).toContain(p1Id);
+
+    const advanced = advanceAuction(room, playersById, 3000);
+    expect(advanced.ended).toBe(false);
+    expect(room.auction.current.playerId).not.toBe(p1Id);
+    expect(room.auction.skipVotes.size).toBe(0);
+    expect(getBidState(room, t1.id, playersById, 1).ok).toBe(true);
+  });
 });
 
 describe('lot shuffling', () => {

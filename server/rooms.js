@@ -287,6 +287,14 @@ export function snapshotRoom(room, playersById, viewerId) {
                 leaderTeam: current.leaderId ? teamSummary(room.teams.get(current.leaderId)) : null,
                 status: current.status,
                 bidCount: current.bidCount,
+                userSkipped: Boolean(
+                  viewerId &&
+                    auction.skipVotes?.has(viewerId) &&
+                    auction.skipVotes.get(viewerId).has(current.playerId),
+                ),
+                skipCount: auction.skipVotes
+                  ? [...auction.skipVotes.values()].filter((set) => set.has(current.playerId)).length
+                  : 0,
               }
             : null,
           lastEvent: enrichEvent(auction.lastEvent, room, playersById),

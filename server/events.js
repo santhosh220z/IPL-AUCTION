@@ -382,18 +382,19 @@ export function registerSocketHandlers(io) {
 
   socket.on('auction:skip', (rawPayload, ack) => {
     const payload = payloadOf(rawPayload);
-    const room = getRoom(payload.code);
-    if (!room) {
-      reply(ack, { ok: false, error: 'Room not found.' });
+    let { room, team } = contextFor(socket);
+    if (!room && payload.code) {
+      room = getRoom(payload.code);
+    }
+    if (!team && room) {
+      team = room.teams.get(socket.data.teamId);
+    }
+    if (!room || !team) {
+      reply(ack, { ok: false, error: 'You are not in a room.' });
       return;
     }
     if (room.state !== 'auction') {
       reply(ack, { ok: false, error: 'The auction is not running.' });
-      return;
-    }
-    const { team } = contextFor(socket);
-    if (!team) {
-      reply(ack, { ok: false, error: 'You are not in a team.' });
       return;
     }
 
@@ -404,6 +405,10 @@ export function registerSocketHandlers(io) {
     }
     if (auction.paused) {
       reply(ack, { ok: false, error: 'The auction is paused.' });
+      return;
+    }
+    if (auction.current.leaderId === team.id) {
+      reply(ack, { ok: false, error: 'You cannot skip a player you hold the highest bid on.' });
       return;
     }
 
@@ -422,9 +427,9 @@ export function registerSocketHandlers(io) {
       const result = settleCurrent(room, playersById, Date.now());
       if (result) {
         touch(room);
-        broadcastRoom(room);
+        scheduleAdvance(room, result.waitMs);
       }
-      reply(ack, { ok: true, kind: result.kind, allSkipped: true });
+      reply(ack, { ok: true, kind: result?.kind, allSkipped: true });
     } else {
       touch(room);
       broadcastRoom(room);

@@ -2,7 +2,7 @@
   "meta": {
     "season": "IPL 2026",
     "source": "ipl dataset/squads.csv + deliveries.csv (deliveries canonical) + new_players.json (auction pool)",
-    "generatedAt": "2026-10-25T12:28:22.860Z",
+    "generatedAt": "2026-10-27T09:27:32.836Z",
     "playerCount": 325,
     "squadPlayerCount": 257,
     "auctionPoolCount": 68,
