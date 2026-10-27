@@ -171,6 +171,7 @@ export default function Auction({
   onSkip,
   onEnd,
   notify,
+  onOpenPurses,
 }) {
   const { auction, teams, settings } = snapshot;
   const current = auction?.current;
@@ -307,56 +308,25 @@ export default function Auction({
   return (
     <main className="auction">
       <section className="auction-head" aria-label="Auction status">
-        <div>
+        <div className="auction-head-main">
           <p className="page-kicker">
             Lot {lotNumber} of {auction.totalCount} · {auction.queueRemaining} left after this
           </p>
-          <h1>{auction.paused ? 'The auction is paused.' : 'The hammer is live.'}</h1>
-        </div>
-        <div className="auction-status">
-          <span className={auction.paused ? 'status-label is-paused' : 'status-label'}>
-            {auction.paused ? 'Paused' : 'Auction in progress'}
+          <span className={`status-badge ${auction.paused ? 'is-paused' : 'is-live'}`}>
+            {auction.paused ? 'Paused' : 'Live'}
           </span>
-          <span className="status-note">{auction.soldCount} sold · {auction.unsoldCount} unsold</span>
+        </div>
+        <div className="auction-head-actions">
+          <Button variant="quiet" className="purses-btn" onClick={onOpenPurses}>
+            Purses
+          </Button>
+          <div className="auction-status">
+            <span className="status-note">{auction.soldCount} sold · {auction.unsoldCount} unsold</span>
+          </div>
         </div>
       </section>
 
       <div className="auction-grid">
-        <aside className="auction-teams" aria-labelledby="auction-teams-title">
-          <div className="section-head">
-            <h2 id="auction-teams-title">Purses</h2>
-            <span className="section-note">{teams.length} teams</span>
-          </div>
-          <ul className="team-list team-list-compact">
-            {teams.map((team) => (
-              <li
-                className={team.id === current.leaderId ? 'team-row is-leading' : 'team-row'}
-                key={team.id}
-              >
-                <TeamMark name={team.teamName} color={team.color} size="small" />
-                <div className="team-row-body">
-                  <p className="team-row-name">
-                    {team.teamName}
-                    {team.id === snapshot.youId ? <span className="row-tag">You</span> : null}
-                  </p>
-                  <p className="team-row-meta">
-                    {formatLakh(team.purseLakh)} · {team.squadCount}/{settings.maxSquad} ·{' '}
-                    {team.overseasCount}/{settings.maxOverseas} overseas
-                  </p>
-                </div>
-                <Button
-                  variant="quiet"
-                  className="row-action"
-                  aria-label={`View ${team.teamName} squad`}
-                  onClick={() => setSquadTeamId(team.id)}
-                >
-                  Squad
-                </Button>
-              </li>
-            ))}
-          </ul>
-        </aside>
-
         <section className="auction-lot" aria-labelledby="lot-title">
           <div className={sold ? 'lot-card lot-card-sold' : unsold ? 'lot-card lot-card-unsold' : 'lot-card'}>
             <div className="lot-topline">

@@ -1070,15 +1070,57 @@ a {
   font-variant-numeric: tabular-nums;
 }
 
+.auction-head-main {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.status-badge.is-live {
+  background: var(--green-soft);
+  color: var(--green);
+  border: 1px solid var(--green);
+}
+
+.status-badge.is-paused {
+  background: var(--red-soft);
+  color: var(--red);
+  border: 1px solid var(--red);
+}
+
+.auction-head-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.purses-btn {
+  min-height: 40px;
+  padding: 0.5rem 0.85rem;
+  font-size: 0.8rem;
+}
+
 .auction-grid {
   display: grid;
-  grid-template-columns: minmax(215px, 0.74fr) minmax(430px, 1.56fr) minmax(250px, 0.84fr);
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 1fr);
   align-items: start;
   gap: clamp(17px, 2.5vw, 32px);
   margin-top: 24px;
 }
 
-.auction-teams,
 .auction-lot,
 .auction-wire {
   min-width: 0;
@@ -1938,7 +1980,7 @@ a {
 
 @media (max-width: 1100px) {
   .auction-grid {
-    grid-template-columns: minmax(195px, 0.68fr) minmax(0, 1.62fr);
+    grid-template-columns: minmax(0, 1fr) minmax(320px, 1fr);
   }
 
   .auction-wire {
@@ -1979,11 +2021,35 @@ a {
   .auction-head {
     display: grid;
     align-items: start;
+    padding-bottom: 10px;
+    gap: 12px;
+  }
+
+  .auction-head h1 {
+    font-size: clamp(1.8rem, 8vw, 3.2rem);
+  }
+
+  .auction-head-main {
+    gap: 10px;
   }
 
   .auction-status {
     justify-items: start;
     text-align: left;
+    gap: 8px;
+  }
+
+  .status-label {
+    font-size: 0.58rem;
+  }
+
+  .status-note {
+    font-size: 0.62rem;
+  }
+
+  .status-badge {
+    padding: 3px 8px;
+    font-size: 0.55rem;
   }
 
   .auction-grid {
@@ -2062,6 +2128,21 @@ a {
     justify-self: end;
   }
 
+  .status-badge {
+    padding: 3px 8px;
+    font-size: 0.55rem;
+  }
+
+  .auction-head-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .purses-btn {
+    width: 100%;
+    text-align: center;
+  }
+
   .site-foot {
     display: grid;
   }
@@ -2083,6 +2164,18 @@ a {
 
   .lot-name {
     font-size: clamp(2.3rem, 11vw, 3.6rem);
+  }
+
+  .lot-topline {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 4px 6px;
+    font-size: 0.58rem;
+  }
+  .lot-topline > span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .bid-figures {
@@ -2204,6 +2297,109 @@ a {
     left: 8px;
     width: auto;
     max-width: none;
+  }
+}
+
+/* Purses Page */
+.purses-page {
+  padding: clamp(20px, 4vw, 32px) 0;
+}
+
+.purses-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 3px double var(--ink);
+}
+
+.purses-header .back-btn {
+  min-height: 44px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.8rem;
+  flex-shrink: 0;
+}
+
+.purses-title {
+  flex: 1;
+  min-width: 0;
+}
+
+.purses-title .page-kicker {
+  margin-bottom: 6px;
+}
+
+.purses-title h1 {
+  max-width: 14ch;
+  font-size: clamp(2.25rem, 4.8vw, 4.2rem);
+  letter-spacing: -0.04em;
+}
+
+.purse-rows {
+  display: grid;
+  gap: 10px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.purse-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--rule-dark);
+  border-radius: 2px;
+  background: var(--paper-light);
+}
+
+.purse-row-body {
+  min-width: 0;
+}
+
+.purse-row-name {
+  font-size: 0.94rem;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.purse-row-meta {
+  color: var(--ink-soft);
+  font-size: 0.72rem;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+.row-tag {
+  display: inline-block;
+  margin-left: 5px;
+  padding: 1px 4px;
+  border: 1px solid var(--rule);
+  color: var(--ink-soft);
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  vertical-align: 1px;
+}
+
+.purse-row .row-action {
+  min-height: 44px;
+  padding: 0.4rem 0.55rem;
+  font-size: 0.7rem;
+}
+
+@media (max-width: 460px) {
+  .purse-row {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .purse-row .row-action {
+    grid-column: 2;
+    justify-self: start;
+    margin-top: 8px;
   }
 }
 
