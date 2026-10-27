@@ -1,8 +1,9 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import Auction from './components/Auction.jsx';
 import Home from './components/Home.jsx';
 import Lobby from './components/Lobby.jsx';
 import Results from './components/Results.jsx';
+import PursesPage from './components/PursesPage.jsx';
 import { LoadingState, Toast } from './components/ui.jsx';
 import { normalizeRoomCode } from '../../shared/constants.js';
 import { useAuctionSocket } from './lib/socket.js';
@@ -42,6 +43,7 @@ export default function App() {
   const initialCode = useMemo(codeFromUrl, []);
   const me = snapshot?.teams.find((team) => team.id === snapshot.youId) ?? null;
   const isHost = Boolean(snapshot && snapshot.hostId === snapshot.youId);
+  const [auctionView, setAuctionView] = useState('auction'); // 'auction' | 'purses'
 
   let screen;
   if (restoring) {
@@ -64,20 +66,30 @@ export default function App() {
       />
     );
   } else if (snapshot.state === 'auction') {
-    screen = (
-      <Auction
-        snapshot={snapshot}
-        timer={timer}
-        connected={connected}
-        isHost={isHost}
-        onBid={bid}
-        onPause={pauseAuction}
-        onResume={resumeAuction}
-        onSkip={skipPlayer}
-        onEnd={endAuction}
-        notify={notify}
-      />
-    );
+    if (auctionView === 'purses') {
+      screen = (
+        <PursesPage
+          snapshot={snapshot}
+          onBack={() => setAuctionView('auction')}
+        />
+      );
+    } else {
+      screen = (
+        <Auction
+          snapshot={snapshot}
+          timer={timer}
+          connected={connected}
+          isHost={isHost}
+          onBid={bid}
+          onPause={pauseAuction}
+          onResume={resumeAuction}
+          onSkip={skipPlayer}
+          onEnd={endAuction}
+          notify={notify}
+          onOpenPurses={() => setAuctionView('purses')}
+        />
+      );
+    }
   } else if (snapshot.state === 'ended') {
     screen = (
       <Results
