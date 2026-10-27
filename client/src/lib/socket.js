@@ -59,6 +59,7 @@ export function useAuctionSocket() {
   const [restoring, setRestoring] = useState(Boolean(initialSession.current));
   const [timer, setTimer] = useState(null);
   const [notice, setNotice] = useState(null);
+  const [chatMessages, setChatMessages] = useState([]);
 
   const notify = useCallback((text, tone = 'info') => {
     noticeId.current += 1;
@@ -164,12 +165,24 @@ export function useAuctionSocket() {
       notify(payload?.reason ?? 'This room closed.', 'error');
     }
 
+    function onChatMessage(msg) {
+      setChatMessages((prev) => [...prev, msg].slice(-200));
+    }
+
+    function onChatHistory(history) {
+      if (Array.isArray(history)) {
+        setChatMessages(history.slice(-200));
+      }
+    }
+
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
     socket.on('connect_error', onConnectError);
     socket.on('room:snapshot', handleSnapshot);
     socket.on('auction:timer', onTimer);
     socket.on('room:closed', onClosed);
+    socket.on('chat:message', onChatMessage);
+    socket.on('chat:history', onChatHistory);
 
     if (socket.connected) onConnect();
 
@@ -220,6 +233,11 @@ export function useAuctionSocket() {
     return response;
   }, [applySession, request]);
 
+  const sendChatMessage = useCallback(
+    (text) => request('chat:send', { text }),
+    [request],
+  );
+
   const command = useCallback((event, payload) => request(event, payload), [request]);
 
   return {
@@ -246,5 +264,7 @@ export function useAuctionSocket() {
     fillSquads: () => command('auction:fillSquads'),
     runSimulation: (seed) => command('simulation:run', seed == null ? {} : { seed }),
     updateSettings: (timerSec) => command('settings:update', { timerSec }),
+    chatMessages,
+    sendChatMessage,
   };
 }

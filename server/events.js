@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import crypto from 'node:crypto';
 import {
   HOST_TRANSFER_MS,
   MIN_PLAYERS_TO_START,
@@ -66,6 +67,20 @@ export function registerSocketHandlers(io) {
       if (!team.socketId) continue;
       io.to(team.socketId).emit('room:snapshot', snapshotRoom(room, playersById, team.id));
     }
+  }
+
+  function emitChatSystemMessage(room, event, payload = {}) {
+    if (!room.chatHistory) room.chatHistory = [];
+    const msg = {
+      id: crypto.randomUUID(),
+      type: 'system',
+      event,
+      ...payload,
+      at: Date.now(),
+    };
+    room.chatHistory.push(msg);
+    if (room.chatHistory.length > 200) room.chatHistory.shift();
+    io.to(room.code).emit('chat:message', msg);
   }
 
   function clearSocketData(socket) {
@@ -196,7 +211,20 @@ export function registerSocketHandlers(io) {
 
       if (!auction.paused && remainingMs <= 0) {
         const result = settleCurrent(room, playersById);
-        if (result) scheduleAdvance(room, result.waitMs);
+        if (result) {
+          if (result.kind === 'sold') {
+            emitChatSystemMessage(room, 'sold', {
+              playerName: result.player.name,
+              teamName: result.team.teamName,
+              priceLakh: result.priceLakh,
+            });
+          } else {
+            emitChatSystemMessage(room, 'unsold', {
+              playerName: result.player.name,
+            });
+          }
+          scheduleAdvance(room, result.waitMs);
+        }
       }
     }, 500);
   }
@@ -363,10 +391,20 @@ export function registerSocketHandlers(io) {
         touch(room);
         scheduleAdvance(room, settled.waitMs);
       }
+      emitChatSystemMessage(room, 'sold', {
+        playerName: result.player.name,
+        teamName: team.teamName,
+        priceLakh: result.amount,
+      });
       reply(ack, { ok: true, amount: result.amount, instantlySold: true });
       return;
     }
 
+    emitChatSystemMessage(room, 'bid', {
+      playerName: result.player.name,
+      teamName: team.teamName,
+      priceLakh: result.amount,
+    });
     broadcastRoom(room);
     reply(ack, { ok: true, amount: result.amount });
   });
@@ -382,6 +420,10 @@ export function registerSocketHandlers(io) {
       return;
     }
     touch(context.room);
+    emitChatSystemMessage(context.room, 'pause', {
+      playerName: context.room.auction.current?.player?.name,
+      byTeamName: context.team.teamName,
+    });
     broadcastRoom(context.room);
     reply(ack, { ok: true });
   });
@@ -397,6 +439,10 @@ export function registerSocketHandlers(io) {
       return;
     }
     touch(context.room);
+    emitChatSystemMessage(context.room, 'resume', {
+      playerName: context.room.auction.current?.player?.name,
+      byTeamName: context.team.teamName,
+    });
     broadcastRoom(context.room);
     reply(ack, { ok: true });
   });
@@ -456,9 +502,26 @@ export function registerSocketHandlers(io) {
       if (result) {
         touch(room);
         scheduleAdvance(room, result.waitMs);
+        if (result.kind === 'sold') {
+          emitChatSystemMessage(room, 'sold', {
+            playerName: result.player.name,
+            teamName: result.team.teamName,
+            priceLakh: result.priceLakh,
+            viaSkip: true,
+          });
+        } else {
+          emitChatSystemMessage(room, 'unsold', {
+            playerName: result.player.name,
+            viaSkip: true,
+          });
+        }
       }
       reply(ack, { ok: true, kind: result?.kind, allSkipped: true });
     } else {
+      emitChatSystemMessage(room, 'skip', {
+        playerName: auction.current.player.name,
+        byTeamName: team.teamName,
+      });
       touch(room);
       broadcastRoom(room);
       reply(ack, { ok: true, allSkipped: false });
@@ -478,6 +541,11 @@ export function registerSocketHandlers(io) {
     }
     endAuction(room, playersById);
     stopAuctionTimers(room);
+    emitChatSystemMessage(room, 'end', {
+      byTeamName: context.team.teamName,
+      totalSold: room.auction?.soldCount ?? 0,
+      totalUnsold: room.auction?.unsoldCount ?? 0,
+    });
     touch(room);
     broadcastRoom(room);
     reply(ack, { ok: true });
@@ -543,6 +611,49 @@ export function registerSocketHandlers(io) {
     } catch (error) {
       reply(ack, { ok: false, error: error.message });
     }
+  });
+
+  // Chat handlers
+  socket.on('chat:send', (rawPayload, ack) => {
+    const payload = payloadOf(rawPayload);
+    const { room, team } = contextFor(socket);
+    if (!room || !team) {
+      reply(ack, { ok: false, error: 'You are not in a room.' });
+      return;
+    }
+    const text = String(payload?.text ?? '').trim();
+    if (!text) {
+      reply(ack, { ok: false, error: 'Message cannot be empty.' });
+      return;
+    }
+    if (text.length > 500) {
+      reply(ack, { ok: false, error: 'Message too long (max 500 characters).' });
+      return;
+    }
+    const msg = {
+      id: crypto.randomUUID(),
+      type: 'user',
+      teamId: team.id,
+      teamName: team.teamName,
+      teamColor: team.color,
+      text,
+      at: Date.now(),
+    };
+    if (!room.chatHistory) room.chatHistory = [];
+    room.chatHistory.push(msg);
+    if (room.chatHistory.length > 200) room.chatHistory.shift();
+    io.to(room.code).emit('chat:message', msg);
+    reply(ack, { ok: true });
+  });
+
+  socket.on('chat:history', (rawPayload, ack) => {
+    const { room, team } = contextFor(socket);
+    if (!room || !team) {
+      reply(ack, { ok: false, error: 'You are not in a room.' });
+      return;
+    }
+    const history = room.chatHistory ?? [];
+    reply(ack, { ok: true, history });
   });
 
   socket.on('disconnect', () => {

@@ -3,7 +3,7 @@ import Auction from './components/Auction.jsx';
 import Home from './components/Home.jsx';
 import Lobby from './components/Lobby.jsx';
 import Results from './components/Results.jsx';
-import PursesPage from './components/PursesPage.jsx';
+import WirePage from './components/WirePage.jsx';
 import { LoadingState, Toast } from './components/ui.jsx';
 import { normalizeRoomCode } from '../../shared/constants.js';
 import { useAuctionSocket } from './lib/socket.js';
@@ -38,12 +38,14 @@ export default function App() {
     fillSquads,
     runSimulation,
     updateSettings,
+    chatMessages,
+    sendChatMessage,
   } = useAuctionSocket();
 
   const initialCode = useMemo(codeFromUrl, []);
   const me = snapshot?.teams.find((team) => team.id === snapshot.youId) ?? null;
   const isHost = Boolean(snapshot && snapshot.hostId === snapshot.youId);
-  const [auctionView, setAuctionView] = useState('auction'); // 'auction' | 'purses'
+  const [wireView, setWireView] = useState(false);
 
   let screen;
   if (restoring) {
@@ -66,11 +68,11 @@ export default function App() {
       />
     );
   } else if (snapshot.state === 'auction') {
-    if (auctionView === 'purses') {
+    if (wireView) {
       screen = (
-        <PursesPage
+        <WirePage
           snapshot={snapshot}
-          onBack={() => setAuctionView('auction')}
+          onBack={() => setWireView(false)}
         />
       );
     } else {
@@ -86,7 +88,10 @@ export default function App() {
           onSkip={skipPlayer}
           onEnd={endAuction}
           notify={notify}
-          onOpenPurses={() => setAuctionView('purses')}
+          onOpenPurses={() => {}}
+          onOpenWire={() => setWireView(true)}
+          onSendChatMessage={sendChatMessage}
+          chatMessages={chatMessages}
         />
       );
     }

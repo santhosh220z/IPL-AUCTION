@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import { BID_RAISE_LAKH, formatLakh, formatRaiseLakh } from '../../../shared/constants.js';
 import {
   formatNumber,
@@ -7,13 +7,11 @@ import {
   roleLabel,
 } from '../lib/format.js';
 import { Button, Dialog, EmptyState, TeamMark } from './ui.jsx';
+import AuctionHeader from './AuctionHeader.jsx';
+import TabBar from './TabBar.jsx';
 
 function useLotClock(auction, timer) {
   const [now, setNow] = useState(Date.now());
-  // Single source of truth: timer events (500ms) drive the countdown while a
-  // lot stays open; the snapshot only adopts the base once per lot transition.
-  // A snapshot adopted on every broadcast could restart the countdown from an
-  // older value and make the clock jump backwards.
   const [base, setBase] = useState(null);
   const lotKeyRef = useRef(null);
 
@@ -160,19 +158,7 @@ function SquadDialog({ team, settings, onClose }) {
   );
 }
 
-export default function Auction({
-  snapshot,
-  timer,
-  connected,
-  isHost,
-  onBid,
-  onPause,
-  onResume,
-  onSkip,
-  onEnd,
-  notify,
-  onOpenPurses,
-}) {
+function LotTab({ snapshot, timer, connected, isHost, onBid, onPause, onResume, onSkip, onEnd, notify }) {
   const { auction, teams, settings } = snapshot;
   const current = auction?.current;
   const player = current?.player;
@@ -184,7 +170,6 @@ export default function Auction({
   const [hostBusy, setHostBusy] = useState(false);
   const [squadTeamId, setSquadTeamId] = useState(null);
   const [confirmEnd, setConfirmEnd] = useState(false);
-
   const [localSkippedPlayerId, setLocalSkippedPlayerId] = useState(null);
 
   useEffect(() => {
@@ -307,95 +292,162 @@ export default function Auction({
 
   return (
     <main className="auction">
-      <section className="auction-head" aria-label="Auction status">
-        <div className="auction-head-main">
-          <p className="page-kicker">
-            Lot {lotNumber} of {auction.totalCount} · {auction.queueRemaining} left after this
-          </p>
-          <span className={`status-badge ${auction.paused ? 'is-paused' : 'is-live'}`}>
-            {auction.paused ? 'Paused' : 'Live'}
-          </span>
-        </div>
-        <div className="auction-head-actions">
-          <Button variant="quiet" className="purses-btn" onClick={onOpenPurses}>
-            Purses
-          </Button>
-          <div className="auction-status">
-            <span className="status-note">{auction.soldCount} sold · {auction.unsoldCount} unsold</span>
-          </div>
-        </div>
-      </section>
+      <AuctionHeader
+        auction={auction}
+        settings={settings}
+        code={snapshot.code}
+        onOpenPurses={() => {}}
+        onOpenWire={() => {}}
+        isMobile={true}
+      />
 
-      <div className="auction-grid">
-        <section className="auction-lot" aria-labelledby="lot-title">
-          <div className={sold ? 'lot-card lot-card-sold' : unsold ? 'lot-card lot-card-unsold' : 'lot-card'}>
-            <div className="lot-topline">
-              <span>{player.set}</span>
-              <span>{roleLabel(player.role)}</span>
-              <span>{nationalityLabel(player.overseas)}</span>
-            </div>
-            <h2 id="lot-title" className="lot-name">
-              {player.name}
-            </h2>
-            <p className="lot-meta">
-              IPL squad: {player.teamName} · Base price {formatLakh(player.basePriceLakh)}
-            </p>
-
-            <div className="lot-ratings" aria-label="Generated player ratings">
-              <div>
-                <span>Overall</span>
-                <strong>{formatNumber(player.ratings.overall)}</strong>
-              </div>
-              <div>
-                <span>Batting</span>
-                <strong>{formatNumber(player.ratings.batting)}</strong>
-              </div>
-              <div>
-                <span>Bowling</span>
-                <strong>{formatNumber(player.ratings.bowling)}</strong>
-              </div>
-            </div>
-
-            <PlayerStats current={current} />
-
-            <div className="lot-bid-panel">
-              <div className="bid-figures">
-                <div>
-                  <span className="label">{current.leaderId ? 'Current bid' : 'Base price'}</span>
-                  <strong className="bid-amount">{formatLakh(current.currentBidLakh)}</strong>
+      <div className="tab-panels">
+        <section className="tab-panel" id="lot-panel" role="tabpanel" aria-labelledby="lot-tab" aria-hidden="false">
+          <div className="lot-tab-content">
+            <section className="auction-lot" aria-labelledby="lot-title">
+              <div className={sold ? 'lot-card lot-card-sold' : unsold ? 'lot-card lot-card-unsold' : 'lot-card'}>
+                <div className="lot-topline">
+                  <span>{player.set}</span>
+                  <span>{roleLabel(player.role)}</span>
+                  <span>{nationalityLabel(player.overseas)}</span>
                 </div>
-                {current.leaderId ? (
+                <h2 id="lot-title" className="lot-name">
+                  {player.name}
+                </h2>
+                <p className="lot-meta">
+                  IPL squad: {player.teamName} · Base price {formatLakh(player.basePriceLakh)}
+                </p>
+
+                <div className="lot-ratings" aria-label="Generated player ratings">
                   <div>
-                    <span className="label">Raise options</span>
-                    <span className="bid-next">+{BID_RAISE_LAKH.map(formatRaiseLakh).join(' · ')}</span>
+                    <span>Overall</span>
+                    <strong>{formatNumber(player.ratings.overall)}</strong>
                   </div>
-                ) : null}
-              </div>
-
-              <div className="bid-leader">
-                <span className="label">Highest bidder</span>
-                <span>{leader ? leader.teamName : 'No bids yet'}</span>
-              </div>
-
-              <div className="timer-block">
-                <div className="timer-row">
-                  <span className="label">{auction.paused ? 'Timer paused' : 'Bid timer'}</span>
-                  <span
-                    className={
-                      !auction.paused && auction.phase === 'open' && timerSeconds <= 5
-                        ? 'timer-value is-urgent'
-                        : 'timer-value'
-                    }
-                  >
-                    {timerSeconds}s
-                  </span>
+                  <div>
+                    <span>Batting</span>
+                    <strong>{formatNumber(player.ratings.batting)}</strong>
+                  </div>
+                  <div>
+                    <span>Bowling</span>
+                    <strong>{formatNumber(player.ratings.bowling)}</strong>
+                  </div>
                 </div>
-                <div className="timer-track" aria-hidden="true">
-                  <span className="timer-fill" style={{ width: `${timerPercent}%` }} />
+
+                <PlayerStats current={current} />
+
+                <div className="lot-bid-panel">
+                  <div className="bid-figures">
+                    <div>
+                      <span className="label">{current.leaderId ? 'Current bid' : 'Base price'}</span>
+                      <strong className="bid-amount">{formatLakh(current.currentBidLakh)}</strong>
+                    </div>
+                    {current.leaderId ? (
+                      <div>
+                        <span className="label">Raise options</span>
+                        <span className="bid-next">+{BID_RAISE_LAKH.map(formatRaiseLakh).join(' · ')}</span>
+                      </div>
+                    ) : null}
+                  </div>
+
+                  <div className="bid-leader">
+                    <span className="label">Highest bidder</span>
+                    <span>{leader ? leader.teamName : 'No bids yet'}</span>
+                  </div>
+
+                  <div className="timer-block">
+                    <div className="timer-row">
+                      <span className="label">{auction.paused ? 'Timer paused' : 'Bid timer'}</span>
+                      <span
+                        className={
+                          !auction.paused && auction.phase === 'open' && timerSeconds <= 5
+                            ? 'timer-value is-urgent'
+                            : 'timer-value'
+                        }
+                      >
+                        {timerSeconds}s
+                      </span>
+                    </div>
+                    <div className="timer-track" aria-hidden="true">
+                      <span className="timer-fill" style={{ width: `${timerPercent}%` }} />
+                    </div>
+                  </div>
+
+                  <div className="bid-actions">
+                    {current.leaderId ? (
+                      <div className="bid-raise-grid">
+                        {raiseButtons.map((button) => (
+                          <Button
+                            key={button.raiseLakh}
+                            variant="accent"
+                            className="bid-raise-btn"
+                            onClick={() => placeBid(button.raiseLakh)}
+                            disabled={Boolean(bidNote) || button.unaffordable || bidPending}
+                            title={
+                              button.unaffordable
+                                ? 'Not enough purse for this bid.'
+                                : undefined
+                            }
+                          >
+                            {bidPending ? '…' : `Bid ${formatLakh(button.amount)}`}
+                          </Button>
+                        ))}
+                      </div>
+                    ) : (
+                      <Button
+                        variant="accent"
+                        className="bid-button"
+                        onClick={() => placeBid(null)}
+                        disabled={Boolean(bidNote) || bidPending}
+                      >
+                        {bidPending
+                          ? 'Placing bid...'
+                          : auction.paused
+                            ? 'Auction paused'
+                            : auction.phase !== 'open'
+                              ? 'Lot closed'
+                              : `Bid ${formatLakh(basePrice)}`}
+                      </Button>
+                    )}
+                    <Button
+                      variant="quiet"
+                      className="skip-btn"
+                      onClick={handleSkip}
+                      disabled={skipPending || userSkipped || isLeader || auction.phase !== 'open' || auction.paused}
+                      title={
+                        userSkipped
+                          ? 'You voted to skip this player'
+                          : isLeader
+                            ? 'You hold the highest bid'
+                            : 'Vote to skip this player'
+                      }
+                    >
+                      {skipPending ? '…' : userSkipped ? 'Skipped' : 'Skip'}
+                    </Button>
+                  </div>
+                  {bidNote ? <p className="action-note">{bidNote}</p> : null}
+                  {bidError ? (
+                    <p className="form-error" role="alert">
+                      {bidError}
+                    </p>
+                  ) : null}
                 </div>
               </div>
 
-              
+              {sold || unsold ? (
+                <div className={sold ? 'result-stamp result-stamp-sold' : 'result-stamp result-stamp-unsold'}>
+                  <p className="stamp-label">{sold ? 'Sold' : 'Unsold'}</p>
+                  <p className="stamp-copy">
+                    {sold
+                      ? `${auction.lastEvent?.player?.name ?? player.name} to ${
+                          auction.lastEvent?.team?.teamName ?? leader?.teamName ?? 'the room'
+                        } for ${formatLakh(auction.lastEvent?.priceLakh ?? current.currentBidLakh)}.`
+                      : `${player.name} goes back into the unsold pool.`}
+                  </p>
+                </div>
+              ) : null}
+            </section>
+
+            <div className="bid-panel-sticky">
               <div className="bid-actions">
                 {current.leaderId ? (
                   <div className="bid-raise-grid">
@@ -456,74 +508,7 @@ export default function Auction({
               ) : null}
             </div>
           </div>
-
-          {sold || unsold ? (
-            <div className={sold ? 'result-stamp result-stamp-sold' : 'result-stamp result-stamp-unsold'}>
-              <p className="stamp-label">{sold ? 'Sold' : 'Unsold'}</p>
-              <p className="stamp-copy">
-                {sold
-                  ? `${auction.lastEvent?.player?.name ?? player.name} to ${
-                      auction.lastEvent?.team?.teamName ?? leader?.teamName ?? 'the room'
-                    } for ${formatLakh(auction.lastEvent?.priceLakh ?? current.currentBidLakh)}.`
-                  : `${player.name} goes back into the unsold pool.`}
-              </p>
-            </div>
-          ) : null}
         </section>
-
-        <aside className="auction-wire" aria-labelledby="wire-title">
-          {isHost ? (
-            <section className="host-panel" aria-labelledby="host-title">
-              <div className="section-head">
-                <h2 id="host-title">Host controls</h2>
-                <span className="section-note">Only you</span>
-              </div>
-              <div className="host-button-grid">
-                <Button
-                  variant="quiet"
-                  onClick={() =>
-                    hostAction(
-                      auction.paused ? onResume : onPause,
-                      auction.paused ? 'The auction did not resume.' : 'The auction did not pause.',
-                    )
-                  }
-                  disabled={hostBusy || auction.phase !== 'open'}
-                >
-                  {auction.paused ? 'Resume auction' : 'Pause auction'}
-                </Button>
-                <Button variant="danger" onClick={() => setConfirmEnd(true)} disabled={hostBusy}>
-                  End auction
-                </Button>
-              </div>
-            </section>
-          ) : null}
-
-          <section className="wire-panel" aria-labelledby="wire-title">
-            <div className="section-head">
-              <h2 id="wire-title">The wire</h2>
-              <span className="section-note">
-                {log.length > 12 ? `Latest 12 of ${log.length}` : 'Latest first'}
-              </span>
-            </div>
-            {log.length === 0 ? (
-              <EmptyState title="No lots settled yet.">The first bid opens the night.</EmptyState>
-            ) : (
-              <ol className="wire-list">
-                {log.slice(0, 12).map((event) => (
-                  <li key={event.id} className={event.type === 'sold' ? 'wire-item is-sold' : 'wire-item'}>
-                    <span className="wire-type">{event.type === 'sold' ? 'Sold' : 'Unsold'}</span>
-                    <span className="wire-player">{event.player?.name}</span>
-                    <span className="wire-detail">
-                      {event.type === 'sold'
-                        ? `${event.team?.teamName ?? 'Team'} · ${formatLakh(event.priceLakh)}`
-                        : 'Back in the pool'}
-                    </span>
-                  </li>
-                ))}
-              </ol>
-            )}
-          </section>
-        </aside>
       </div>
 
       <p className="visually-hidden" aria-live="polite">
@@ -531,7 +516,7 @@ export default function Auction({
           ? `Sold. ${player.name} to ${leader?.teamName ?? 'a team'} for ${formatLakh(current.currentBidLakh)}.`
           : unsold
             ? `Unsold. ${player.name} returns to the pool.`
-             : `${player.name} is on the block. The bid is ${formatLakh(current.currentBidLakh)}.`}
+            : `${player.name} is on the block. The bid is ${formatLakh(current.currentBidLakh)}.`}
       </p>
 
       <SquadDialog team={squadTeam} settings={settings} onClose={() => setSquadTeamId(null)} />
@@ -563,5 +548,319 @@ export default function Auction({
         </p>
       </Dialog>
     </main>
+  );
+}
+
+function PursesTab({ snapshot }) {
+  const { teams, settings, code, youId } = snapshot;
+  const [squadTeamId, setSquadTeamId] = useState(null);
+
+  return (
+    <div className="tab-panels">
+      <section className="tab-panel" id="purses-panel" role="tabpanel" aria-labelledby="purses-tab" aria-hidden="false">
+        <header className="purses-tab-header">
+          <p className="page-kicker">Room {code}</p>
+        </header>
+        <ul className="purse-rows-tab" aria-label="Team purses">
+          {teams.map((team) => (
+            <li className="purse-row-tab" key={team.id}>
+              <TeamMark name={team.teamName} color={team.color} size="small" />
+              <div className="purse-row-tab-body">
+                <p className="purse-row-tab-name">
+                  {team.teamName}
+                  {team.id === youId ? <span className="row-tag">You</span> : null}
+                </p>
+                <p className="purse-row-tab-meta">
+                  {formatLakh(team.purseLakh)} remaining · {team.squadCount}/{settings.maxSquad} players ·{' '}
+                  {team.overseasCount}/{settings.maxOverseas} overseas
+                </p>
+              </div>
+              <Button
+                variant="quiet"
+                className="row-action"
+                aria-label={`View ${team.teamName} squad`}
+                onClick={() => setSquadTeamId(team.id)}
+              >
+                Squad
+              </Button>
+            </li>
+          ))}
+        </ul>
+
+        <SquadDialog team={teams.find((t) => t.id === squadTeamId)} settings={settings} onClose={() => setSquadTeamId(null)} />
+      </section>
+    </div>
+  );
+}
+
+function ChatTab({ snapshot, messages, onSendMessage, connected }) {
+  const { teams, code } = snapshot;
+  const me = teams.find((team) => team.id === snapshot.youId);
+  const [inputValue, setInputValue] = useState('');
+  const messagesEndRef = useRef(null);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
+  function handleSend(event) {
+    event.preventDefault();
+    const text = inputValue.trim();
+    if (!text) return;
+    onSendMessage(text);
+    setInputValue('');
+  }
+
+  function renderSystemMessage(msg) {
+    const { event, ...payload } = msg;
+    switch (event) {
+      case 'bid':
+        return (
+          <>
+            <span className="system-icon">💰</span>
+            <strong>{payload.teamName}</strong> bid <strong>{payload.priceLakh}L</strong> for {payload.playerName}
+          </>
+        );
+      case 'sold':
+        return (
+          <>
+            <span className="system-icon">✅</span>
+            <strong>{payload.playerName}</strong> sold to <strong>{payload.teamName}</strong> for <strong>{payload.priceLakh}L</strong>
+            {payload.viaSkip && <span className="system-via"> (via skip)</span>}
+          </>
+        );
+      case 'unsold':
+        return (
+          <>
+            <span className="system-icon">❌</span>
+            <strong>{payload.playerName}</strong> unsold
+            {payload.viaSkip && <span className="system-via"> (all teams skipped)</span>}
+          </>
+        );
+      case 'skip':
+        return (
+          <>
+            <span className="system-icon">⏭️</span>
+            <strong>{payload.byTeamName}</strong> voted to skip <strong>{payload.playerName}</strong>
+          </>
+        );
+      case 'pause':
+        return (
+          <>
+            <span className="system-icon">⏸️</span>
+            Auction paused by <strong>{payload.byTeamName}</strong>
+            {payload.playerName && <span> on <strong>{payload.playerName}</strong></span>}
+          </>
+        );
+      case 'resume':
+        return (
+          <>
+            <span className="system-icon">▶️</span>
+            Auction resumed by <strong>{payload.byTeamName}</strong>
+            {payload.playerName && <span> for <strong>{payload.playerName}</strong></span>}
+          </>
+        );
+      case 'end':
+        return (
+          <>
+            <span className="system-icon">🏁</span>
+            Auction ended by <strong>{payload.byTeamName}</strong>
+            <span className="system-stats"> — {payload.totalSold} sold, {payload.totalUnsold} unsold</span>
+          </>
+        );
+      default:
+        return <span>{msg.text || 'System message'}</span>;
+    }
+  }
+
+  function handleSend(event) {
+    event.preventDefault();
+    const text = inputValue.trim();
+    if (!text) return;
+    onSendMessage(text);
+    setInputValue('');
+  }
+
+  return (
+    <div className="tab-panels">
+      <section className="tab-panel chat-tab" id="chat-panel" role="tabpanel" aria-labelledby="chat-tab" aria-hidden="false">
+        <header className="chat-header">
+          <p className="page-kicker">Room {code}</p>
+        </header>
+        <div className="chat-messages" role="log" aria-live="polite" aria-label="Chat messages">
+          {messages.length === 0 ? (
+            <p className="empty-state" style={{ textAlign: 'center', color: 'var(--ink-soft)', padding: '24px 0' }}>
+              No messages yet. Start the conversation!
+            </p>
+          ) : (
+            messages.map((msg) => (
+              <div
+                key={msg.id}
+                className={`chat-message ${msg.type}`}
+              >
+                <div className="chat-message-meta">
+                  {msg.type === 'system' ? (
+                    <span className="system-sender">📢 System</span>
+                  ) : (
+                    <>
+                      <span className="chat-message-team">
+                        <span
+                          className="chat-message-team-mark"
+                          style={{
+                            borderColor: msg.teamColor,
+                            background: `color-mix(in srgb, ${msg.teamColor} 16%, var(--paper))`,
+                            color: msg.teamColor,
+                          }}
+                        >
+                          {msg.teamName.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)}
+                        </span>
+                        <span>{msg.teamName}</span>
+                      </span>
+                    </>
+                  )}
+                  <time className="chat-message-time" dateTime={new Date(msg.at).toISOString()}>
+                    {new Date(msg.at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  </time>
+                </div>
+                <p className="chat-message-text">
+                  {msg.type === 'system' ? renderSystemMessage(msg) : msg.text}
+                </p>
+              </div>
+            ))
+          )}
+          <div ref={messagesEndRef} />
+        </div>
+        <form className="chat-input-bar" onSubmit={handleSend}>
+          <input
+            type="text"
+            className="chat-input"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            placeholder="Type a message..."
+            aria-label="Chat message"
+            autoComplete="off"
+            disabled={!connected}
+          />
+          <Button type="submit" variant="accent" className="chat-send-btn" disabled={!inputValue.trim() || !connected}>
+            Send
+          </Button>
+        </form>
+      </section>
+    </div>
+  );
+}
+
+export default function Auction({
+  snapshot,
+  timer,
+  connected,
+  isHost,
+  onBid,
+  onPause,
+  onResume,
+  onSkip,
+  onEnd,
+  notify,
+  onOpenPurses,
+  onOpenWire,
+  onSendChatMessage,
+  chatMessages = [],
+}) {
+  const [activeTab, setActiveTab] = useState('lot');
+  const [unreadChatCount, setUnreadChatCount] = useState(0);
+
+  // Track unread messages when not on chat tab
+  useEffect(() => {
+    if (activeTab !== 'chat' && chatMessages.length > 0) {
+      // Simple unread count - in real app would track last read timestamp
+      setUnreadChatCount(chatMessages.length);
+    } else if (activeTab === 'chat') {
+      setUnreadChatCount(0);
+    }
+  }, [chatMessages, activeTab]);
+
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 900;
+
+  const handleTabChange = useCallback((tabId) => {
+    setActiveTab(tabId);
+    if (tabId === 'chat') setUnreadChatCount(0);
+  }, []);
+
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case 'lot':
+        return (
+          <LotTab
+            snapshot={snapshot}
+            timer={timer}
+            connected={connected}
+            isHost={isHost}
+            onBid={onBid}
+            onPause={onPause}
+            onResume={onResume}
+            onSkip={onSkip}
+            onEnd={onEnd}
+            notify={notify}
+          />
+        );
+      case 'purses':
+        return <PursesTab snapshot={snapshot} />;
+      case 'chat':
+        return (
+          <ChatTab
+            snapshot={snapshot}
+            messages={chatMessages}
+            onSendMessage={onSendChatMessage}
+            connected={connected}
+          />
+        );
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <>
+      {isMobile ? (
+        <>
+          {renderTabContent()}
+          <TabBar
+            activeTab={activeTab}
+            onTabChange={handleTabChange}
+            unreadChatCount={unreadChatCount}
+          />
+        </>
+      ) : (
+        <div className="auction-desktop">
+          <AuctionHeader
+            auction={snapshot.auction}
+            settings={snapshot.settings}
+            code={snapshot.code}
+            onOpenPurses={onOpenPurses}
+            onOpenWire={onOpenWire}
+            isMobile={false}
+          />
+          <div className="auction-grid">
+            <section className="auction-lot" aria-labelledby="lot-title">
+              <LotTab
+                snapshot={snapshot}
+                timer={timer}
+                connected={connected}
+                isHost={isHost}
+                onBid={onBid}
+                onPause={onPause}
+                onResume={onResume}
+                onSkip={onSkip}
+                onEnd={onEnd}
+                notify={notify}
+              />
+            </section>
+            <aside className="auction-wire" aria-labelledby="wire-title">
+              {/* Wire panel for desktop - keep existing or simplify */}
+            </aside>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
