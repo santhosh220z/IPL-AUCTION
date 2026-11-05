@@ -10,6 +10,7 @@ import {
   previewRoom,
   promoteHost,
   removeTeam,
+  resetRoom,
   rooms,
   snapshotRoom,
 } from '../rooms.js';
@@ -144,6 +145,35 @@ describe('host promotion and snapshots', () => {
     const guestSnapshot = snapshotRoom(room, playersById, joined.team.id);
     expect(guestSnapshot.auction.current.userSkipped).toBe(false);
     expect(guestSnapshot.auction.current.skipCount).toBe(1);
+
+    rooms.delete(room.code);
+  });
+
+  it('resets room state back to lobby and clears squads and purses', () => {
+    const { room, team } = freshRoom();
+    const joined = joinRoom(room, { teamName: 'Beta', color: 'amber' });
+    expect(joined.ok).toBe(true);
+
+    // Cannot reset when not ended
+    expect(resetRoom(room).ok).toBe(false);
+
+    room.state = 'ended';
+    room.auction = { dummy: true };
+    room.simulation = { dummy: true };
+    team.purseLakh = 5000;
+    team.squad = [{ playerId: 'p1', priceLakh: 7000 }];
+    team.overseasCount = 2;
+    team.lastBidAt = 123456;
+
+    const result = resetRoom(room);
+    expect(result.ok).toBe(true);
+    expect(room.state).toBe('lobby');
+    expect(room.auction).toBeNull();
+    expect(room.simulation).toBeNull();
+    expect(team.purseLakh).toBe(12000);
+    expect(team.squad).toEqual([]);
+    expect(team.overseasCount).toBe(0);
+    expect(team.lastBidAt).toBe(0);
 
     rooms.delete(room.code);
   });
