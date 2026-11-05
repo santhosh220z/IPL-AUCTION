@@ -130,6 +130,7 @@ export function useAuctionSocket() {
         applySession(null);
         setSnapshot(null);
         setTimer(null);
+        setChatMessages([]);
         setRestoring(false);
         notify('That room is no longer available. Create a room or join with a fresh code.', 'error');
       }
@@ -161,6 +162,7 @@ export function useAuctionSocket() {
       applySession(null);
       setSnapshot(null);
       setTimer(null);
+      setChatMessages([]);
       setRestoring(false);
       notify(payload?.reason ?? 'This room closed.', 'error');
     }
@@ -193,6 +195,8 @@ export function useAuctionSocket() {
       socket.off('room:snapshot', handleSnapshot);
       socket.off('auction:timer', onTimer);
       socket.off('room:closed', onClosed);
+      socket.off('chat:message', onChatMessage);
+      socket.off('chat:history', onChatHistory);
     };
   }, [applySession, handleSnapshot, notify, rejoin]);
 
@@ -230,6 +234,7 @@ export function useAuctionSocket() {
     applySession(null);
     setSnapshot(null);
     setTimer(null);
+    setChatMessages([]);
     return response;
   }, [applySession, request]);
 
