@@ -298,7 +298,7 @@ export function snapshotRoom(room, playersById, viewerId) {
               }
             : null,
           lastEvent: enrichEvent(auction.lastEvent, room, playersById),
-          log: auction.log.slice(-20).map((event) => enrichEvent(event, room, playersById)),
+          log: auction.log.map((event) => enrichEvent(event, room, playersById)),
           unsoldPlayers:
             room.state === 'ended'
               ? auction.unsold
