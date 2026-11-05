@@ -1609,6 +1609,51 @@ a {
   gap: 8px;
 }
 
+.desktop-sidebar-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 8px;
+}
+
+.desktop-sidebar-tab-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border-radius: 2px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: all 120ms ease;
+}
+
+.desktop-sidebar-tab-btn:hover {
+  background: var(--paper-light);
+  color: var(--ink);
+}
+
+.desktop-sidebar-tab-btn.is-active {
+  background: var(--green-soft);
+  color: var(--green);
+  border-color: var(--green);
+}
+
+.desktop-sidebar-tab-btn .tab-badge {
+  position: static;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 4px;
+}
+
 .wire-panel {
   padding-top: 9px;
   border-top: 2px solid var(--ink);
