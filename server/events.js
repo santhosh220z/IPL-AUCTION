@@ -29,6 +29,7 @@ import {
   previewRoom,
   promoteHost,
   removeTeam,
+  resetRoom,
   rooms,
   snapshotRoom,
   touch,
@@ -612,6 +613,26 @@ export function registerSocketHandlers(io) {
     } catch (error) {
       reply(ack, { ok: false, error: error.message });
     }
+  });
+
+  socket.on('room:restart', (_rawPayload, ack) => {
+    const context = hostContextFor(socket);
+    if (context.error) {
+      reply(ack, { ok: false, error: context.error });
+      return;
+    }
+    const { room } = context;
+    const result = resetRoom(room);
+    if (!result.ok) {
+      reply(ack, result);
+      return;
+    }
+    emitChatSystemMessage(room, 'restart', {
+      byTeamName: context.team.teamName,
+    });
+    touch(room);
+    broadcastRoom(room);
+    reply(ack, { ok: true });
   });
 
   // Chat handlers
