@@ -235,6 +235,24 @@ function enrichEvent(event, room, playersById) {
   };
 }
 
+export function resetRoom(room) {
+  if (room.state !== 'ended') {
+    return { ok: false, error: 'The room can only be restarted after the tournament is ended.' };
+  }
+  clearRoomTimers(room);
+  room.state = 'lobby';
+  room.auction = null;
+  room.simulation = null;
+  for (const team of room.teams.values()) {
+    team.purseLakh = PURSE_LAKH;
+    team.squad = [];
+    team.overseasCount = 0;
+    team.lastBidAt = 0;
+  }
+  touch(room);
+  return { ok: true, room };
+}
+
 export function snapshotRoom(room, playersById, viewerId) {
   const auction = room.auction;
   const current = auction?.current;
