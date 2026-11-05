@@ -37,6 +37,7 @@ export default function App() {
     endAuction,
     fillSquads,
     runSimulation,
+    restartRoom,
     updateSettings,
     chatMessages,
     sendChatMessage,
@@ -102,6 +103,7 @@ export default function App() {
         isHost={isHost}
         onFillSquads={fillSquads}
         onRunSimulation={runSimulation}
+        onRestart={restartRoom}
         onLeave={leaveRoom}
         notify={notify}
       />

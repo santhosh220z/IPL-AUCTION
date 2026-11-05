@@ -128,7 +128,7 @@ function SeedControl({ seed, onSeed }) {
   );
 }
 
-function TournamentView({ simulation, teams, isHost, seed, setSeed, onRun, onLeave, busy, notify }) {
+function TournamentView({ simulation, teams, isHost, seed, setSeed, onRun, onRestart, restarting, onLeave, busy, notify }) {
   const [scorecard, setScorecard] = useState(null);
   const invalidTeams = simulation.teams.filter((team) => !team.validXI);
 
@@ -223,15 +223,27 @@ function TournamentView({ simulation, teams, isHost, seed, setSeed, onRun, onLea
       {isHost ? (
         <section className="host-panel results-host" aria-labelledby="run-again-title">
           <div className="section-head">
-            <h2 id="run-again-title">Run it again</h2>
+            <h2 id="run-again-title">Play again or redraw</h2>
             <span className="section-note">Host only</span>
+          </div>
+          <p className="settings-copy">
+            Restarting returns everyone to the lobby with fresh purses for a new auction.
+          </p>
+          <div className="host-button-grid" style={{ marginBottom: '16px' }}>
+            <Button variant="accent" onClick={onRestart} disabled={busy || restarting}>
+              {restarting ? 'Restarting room...' : 'Play again (New auction)'}
+            </Button>
+          </div>
+          <div className="section-head" style={{ marginTop: '16px' }}>
+            <h3 style={{ fontSize: '0.9rem', margin: 0 }}>Simulate again</h3>
+            <span className="section-note">Same squads</span>
           </div>
           <p className="settings-copy">
             A new seed redraws the bracket. The squads stay the same.
           </p>
           <SeedControl seed={seed} onSeed={setSeed} />
           <div className="host-button-grid">
-            <Button variant="accent" onClick={runAgain} disabled={busy}>
+            <Button variant="quiet" onClick={runAgain} disabled={busy || restarting}>
               {busy ? 'Simulating...' : 'Simulate again'}
             </Button>
             <Button variant="quiet" onClick={onLeave}>
@@ -241,7 +253,7 @@ function TournamentView({ simulation, teams, isHost, seed, setSeed, onRun, onLea
         </section>
       ) : (
         <div className="results-footer">
-          <p className="settings-copy">The host can run another draw from this room.</p>
+          <p className="settings-copy">The host can restart the room for a new auction or run another draw.</p>
           <Button variant="quiet" onClick={onLeave}>
             Leave room
           </Button>
@@ -255,16 +267,24 @@ function TournamentView({ simulation, teams, isHost, seed, setSeed, onRun, onLea
   );
 }
 
-export default function Results({ snapshot, isHost, onFillSquads, onRunSimulation, onLeave, notify }) {
+export default function Results({ snapshot, isHost, onFillSquads, onRunSimulation, onRestart, onLeave, notify }) {
   const { auction, teams, simulation } = snapshot;
   const [seed, setSeed] = useState('');
   const [fillBusy, setFillBusy] = useState(false);
   const [runBusy, setRunBusy] = useState(false);
+  const [restarting, setRestarting] = useState(false);
 
   const shortTeams = teams.filter((team) => team.squadCount < 11);
   const soldCount = teams.reduce((sum, team) => sum + team.squadCount, 0);
   const spent = teams.reduce((sum, team) => sum + spentBy(team), 0);
   const unsold = auction?.unsoldPlayers ?? [];
+
+  async function handleRestart() {
+    setRestarting(true);
+    const response = await onRestart();
+    setRestarting(false);
+    if (!response?.ok) notify(response?.error ?? 'The room could not be restarted.', 'error');
+  }
 
   async function fill() {
     setFillBusy(true);
@@ -306,6 +326,8 @@ export default function Results({ snapshot, isHost, onFillSquads, onRunSimulatio
           seed={seed}
           setSeed={setSeed}
           onRun={onRunSimulation}
+          onRestart={handleRestart}
+          restarting={restarting}
           onLeave={onLeave}
           busy={runBusy}
           notify={notify}
@@ -403,6 +425,13 @@ export default function Results({ snapshot, isHost, onFillSquads, onRunSimulatio
       ) : null}
 
       <div className="results-footer">
+        {isHost && (
+          <div style={{ marginBottom: '12px' }}>
+            <Button variant="accent" onClick={handleRestart} disabled={restarting || fillBusy || runBusy}>
+              {restarting ? 'Restarting room...' : 'Play again (New auction)'}
+            </Button>
+          </div>
+        )}
         <p className="settings-copy">Leaving the room keeps the auction closed for everyone else.</p>
         <Button variant="quiet" onClick={onLeave}>
           Leave room

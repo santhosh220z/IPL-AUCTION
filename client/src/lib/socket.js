@@ -268,6 +268,7 @@ export function useAuctionSocket() {
     endAuction: () => command('auction:end'),
     fillSquads: () => command('auction:fillSquads'),
     runSimulation: (seed) => command('simulation:run', seed == null ? {} : { seed }),
+    restartRoom: () => command('room:restart'),
     updateSettings: (timerSec) => command('settings:update', { timerSec }),
     chatMessages,
     sendChatMessage,
