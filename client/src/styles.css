@@ -2715,8 +2715,8 @@ a {
 
 /* Chat Tab */
 .chat-tab {
-  display: grid;
-  grid-template-rows: auto 1fr auto;
+  display: flex;
+  flex-direction: column;
   height: 100%;
   min-height: calc(100vh - 140px);
 }
@@ -2735,7 +2735,243 @@ a {
   margin: 0;
 }
 
+/* Mobile Chat Live-Lot Bidding Banner */
+.chat-bid-banner {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--paper-light);
+  border: 1px solid var(--rule-dark);
+  border-bottom: 2px solid var(--ink);
+  box-shadow: 0 4px 12px var(--shadow);
+  display: grid;
+  gap: 6px;
+  padding: 8px 12px 10px;
+  margin: 8px 0 12px;
+  animation: panel-fade 120ms ease-out;
+}
+
+.chat-bid-track {
+  height: 3px;
+  background: var(--paper-deep);
+  border-radius: 1px;
+  overflow: hidden;
+  margin-bottom: 2px;
+}
+
+.chat-bid-fill {
+  display: block;
+  height: 100%;
+  background: var(--green);
+  transition: width 100ms linear;
+}
+
+.chat-bid-fill.is-urgent {
+  background: var(--red);
+}
+
+.chat-bid-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.chat-bid-player-info {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  min-width: 0;
+}
+
+.chat-bid-player-name {
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chat-bid-player-role {
+  font-size: 0.65rem;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.chat-bid-timer-pill .timer-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  background: var(--paper-deep);
+  border: 1px solid var(--rule-dark);
+  color: var(--ink);
+}
+
+.chat-bid-timer-pill .timer-pill.is-urgent {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+
+.chat-bid-timer-pill .timer-pill.is-paused {
+  background: var(--paper-selected);
+  color: var(--ink-soft);
+}
+
+.chat-bid-timer-pill .timer-pill.is-sold {
+  background: var(--green-soft);
+  color: var(--green);
+}
+
+.chat-bid-timer-pill .timer-pill.is-unsold {
+  background: var(--red-soft);
+  color: var(--red);
+}
+
+.chat-bid-status-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--ink-soft);
+  gap: 8px;
+}
+
+.chat-bid-figure {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.chat-bid-figure strong {
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.88rem;
+}
+
+.chat-bid-leader {
+  font-size: 0.72rem;
+}
+
+.chat-bid-leading-badge {
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--green);
+  background: var(--green-soft);
+  padding: 2px 6px;
+  border-radius: 2px;
+  border: 1px solid var(--green);
+}
+
+.chat-bid-skipped-badge {
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  background: var(--paper);
+  padding: 2px 6px;
+  border-radius: 2px;
+  border: 1px solid var(--rule);
+}
+
+.chat-bid-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.chat-bid-raise-group {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+  flex: 1;
+}
+
+.chat-bid-chip {
+  min-height: 34px;
+  padding: 0 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  border-radius: 2px;
+  border: 1px solid var(--green);
+  background: var(--green-soft);
+  color: var(--green);
+  cursor: pointer;
+  transition: all 100ms ease;
+}
+
+.chat-bid-chip:hover:not(:disabled) {
+  background: var(--green);
+  color: var(--on-accent);
+}
+
+.chat-bid-chip:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  border-color: var(--rule);
+  color: var(--ink-soft);
+  background: var(--paper);
+}
+
+.chat-bid-chip.is-skip {
+  border-color: var(--rule-dark);
+  color: var(--ink-soft);
+  background: var(--paper);
+  padding: 0 10px;
+}
+
+.chat-bid-chip.is-skip:hover:not(:disabled) {
+  border-color: var(--ink);
+  color: var(--ink);
+}
+
+.chat-bid-btn-primary {
+  flex: 1;
+  min-height: 34px;
+  padding: 0 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 800;
+  border-radius: 2px;
+  border: 1px solid var(--green);
+  background: var(--green);
+  color: var(--on-accent);
+  cursor: pointer;
+  transition: all 100ms ease;
+}
+
+.chat-bid-btn-primary:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.chat-bid-btn-primary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  background: var(--paper-light);
+  border-color: var(--rule-dark);
+  color: var(--ink-soft);
+}
+
 .chat-messages {
+  flex: 1;
   display: grid;
   gap: 8px;
   padding: 12px 0;

@@ -563,9 +563,212 @@ function PursesTab({ snapshot }) {
   );
 }
 
+/* ── Mobile Chat Live Bid Banner ────────────────────────── */
+
+function ChatBidBanner({ snapshot, timer, connected, onBid, onSkip, notify }) {
+  const { auction, settings } = snapshot;
+  const current = auction?.current;
+  const player = current?.player;
+  const leader = current?.leaderTeam;
+  const me = snapshot.teams.find((t) => t.id === snapshot.youId);
+  const remaining = useLotClock(auction, timer);
+  const [bidPending, setBidPending] = useState(false);
+  const [skipPending, setSkipPending] = useState(false);
+  const [localSkippedPlayerId, setLocalSkippedPlayerId] = useState(null);
+
+  useEffect(() => {
+    setLocalSkippedPlayerId(null);
+  }, [current?.player?.id]);
+
+  if (!auction || !current || !player) return null;
+
+  const sold = auction.phase === 'sold';
+  const unsold = auction.phase === 'unsold';
+  const timerSeconds = Math.ceil(remaining / 1000);
+  const timerPercent = auction
+    ? Math.min(100, Math.max(0, (remaining / (auction.timerSec * 1000)) * 100))
+    : 0;
+
+  const userSkipped = Boolean(
+    current?.userSkipped || (localSkippedPlayerId && localSkippedPlayerId === current?.player?.id),
+  );
+  const isLeader = current?.leaderId === me?.id;
+  const squadFull = me ? me.squadCount >= settings.maxSquad : false;
+  const overseasBlocked = Boolean(
+    me && player?.overseas && me.overseasCount >= settings.maxOverseas,
+  );
+
+  let bidBlockedReason = '';
+  if (!connected) bidBlockedReason = 'Reconnecting';
+  else if (auction.paused) bidBlockedReason = 'Paused';
+  else if (auction.phase !== 'open') bidBlockedReason = 'Closed';
+  else if (userSkipped) bidBlockedReason = 'Skipped';
+  else if (isLeader) bidBlockedReason = 'You lead';
+  else if (squadFull) bidBlockedReason = 'Squad full';
+  else if (overseasBlocked) bidBlockedReason = 'Overseas limit';
+
+  const basePrice = current.basePriceLakh ?? 0;
+  const baseUnaffordable = Boolean(me && !current.leaderId && me.purseLakh < basePrice);
+  const raiseButtons = BID_RAISE_LAKH.map((raiseLakh) => {
+    const amount = current.leaderId ? current.currentBidLakh + raiseLakh : null;
+    return {
+      raiseLakh,
+      amount,
+      unaffordable: amount != null && (!me || me.purseLakh < amount),
+    };
+  });
+
+  async function placeBid(raiseLakh) {
+    if (bidPending || !auction?.current || bidBlockedReason) return;
+    setBidPending(true);
+    try {
+      const response = await onBid(raiseLakh);
+      if (!response?.ok) {
+        notify(response?.error ?? 'The bid could not be placed.', 'error');
+      } else if (response.instantlySold) {
+        notify(`${player.name} sold to you - all other teams skipped!`, 'info');
+      }
+    } catch {
+      notify('Could not reach the server.', 'error');
+    } finally {
+      setBidPending(false);
+    }
+  }
+
+  async function handleSkip() {
+    if (skipPending || !auction?.current || userSkipped || isLeader) return;
+    setSkipPending(true);
+    const playerId = current?.player?.id;
+    try {
+      const response = await onSkip();
+      if (!response?.ok) {
+        notify(response?.error ?? 'The skip was not recorded.', 'error');
+      } else {
+        setLocalSkippedPlayerId(playerId);
+        if (response.allSkipped) {
+          if (response.kind === 'sold') {
+            notify(`${player.name} sold - all other teams skipped!`, 'info');
+          } else {
+            notify(`${player.name} unsold - all teams skipped!`, 'info');
+          }
+        } else {
+          notify(`${player.name} skip recorded.`, 'info');
+        }
+      }
+    } catch {
+      notify('Could not reach the server.', 'error');
+    } finally {
+      setSkipPending(false);
+    }
+  }
+
+  return (
+    <aside className="chat-bid-banner" aria-label="Current lot live bidding">
+      <div className="chat-bid-track" aria-hidden="true">
+        <span
+          className={!auction.paused && auction.phase === 'open' && timerSeconds <= 5 ? 'chat-bid-fill is-urgent' : 'chat-bid-fill'}
+          style={{ width: `${timerPercent}%` }}
+        />
+      </div>
+
+      <div className="chat-bid-top">
+        <div className="chat-bid-player-info">
+          <span className="chat-bid-player-name">{player.name}</span>
+          <span className="chat-bid-player-role">
+            {roleLabel(player.role)} {player.overseas ? '· Overseas' : ''}
+          </span>
+        </div>
+
+        <div className="chat-bid-timer-pill">
+          {auction.paused ? (
+            <span className="timer-pill is-paused">Paused</span>
+          ) : auction.phase === 'open' ? (
+            <span className={timerSeconds <= 5 ? 'timer-pill is-urgent' : 'timer-pill'}>
+              ⏱️ {timerSeconds}s
+            </span>
+          ) : (
+            <span className={sold ? 'timer-pill is-sold' : 'timer-pill is-unsold'}>
+              {sold ? 'Sold' : 'Unsold'}
+            </span>
+          )}
+        </div>
+      </div>
+
+      <div className="chat-bid-status-line">
+        <div className="chat-bid-figure">
+          <span className="chat-bid-label">{current.leaderId ? 'Current' : 'Base'}:</span>
+          <strong>{formatLakh(current.currentBidLakh)}</strong>
+          {leader ? (
+            <span className="chat-bid-leader">
+              by <strong style={{ color: isLeader ? 'var(--green)' : 'inherit' }}>
+                {isLeader ? 'You' : leader.teamName}
+              </strong>
+            </span>
+          ) : (
+            <span className="chat-bid-leader">(Opening)</span>
+          )}
+        </div>
+        {isLeader && <span className="chat-bid-leading-badge">Leading</span>}
+        {userSkipped && <span className="chat-bid-skipped-badge">Skipped</span>}
+      </div>
+
+      {auction.phase === 'open' && (
+        <div className="chat-bid-actions">
+          {current.leaderId ? (
+            <div className="chat-bid-raise-group">
+              {raiseButtons.map((btn) => (
+                <button
+                  key={btn.raiseLakh}
+                  type="button"
+                  className="chat-bid-chip"
+                  onClick={() => placeBid(btn.raiseLakh)}
+                  disabled={Boolean(bidBlockedReason) || btn.unaffordable || bidPending}
+                  title={btn.unaffordable ? 'Not enough purse' : `Bid ${formatLakh(btn.amount)}`}
+                >
+                  +{formatRaiseLakh(btn.raiseLakh)}
+                </button>
+              ))}
+            </div>
+          ) : (
+            <button
+              type="button"
+              className="chat-bid-btn-primary"
+              onClick={() => placeBid(null)}
+              disabled={Boolean(bidBlockedReason) || baseUnaffordable || bidPending}
+            >
+              {bidPending ? '…' : `Bid ${formatLakh(basePrice)}`}
+            </button>
+          )}
+
+          <button
+            type="button"
+            className="chat-bid-chip is-skip"
+            onClick={handleSkip}
+            disabled={skipPending || userSkipped || isLeader || bidBlockedReason === 'Paused'}
+            title="Skip this player"
+          >
+            {skipPending ? '…' : userSkipped ? 'Skipped' : 'Skip'}
+          </button>
+        </div>
+      )}
+    </aside>
+  );
+}
+
 /* ── Chat tab ───────────────────────────────────────────── */
 
-function ChatTab({ snapshot, messages, onSendMessage, connected, isSidebar = false }) {
+function ChatTab({
+  snapshot,
+  messages,
+  onSendMessage,
+  connected,
+  isSidebar = false,
+  timer,
+  onBid,
+  onSkip,
+  notify,
+  showBidBanner = false,
+}) {
   const { code } = snapshot;
   const [inputValue, setInputValue] = useState('');
   const messagesEndRef = useRef(null);
@@ -639,6 +842,13 @@ function ChatTab({ snapshot, messages, onSendMessage, connected, isSidebar = fal
             <span className="system-stats"> — {payload.totalSold} sold, {payload.totalUnsold} unsold</span>
           </>
         );
+      case 'restart':
+        return (
+          <>
+            <span className="system-icon">🔄</span>
+            Room restarted by <strong>{payload.byTeamName}</strong> for a new auction!
+          </>
+        );
       default:
         return <span>{msg.text || 'System message'}</span>;
     }
@@ -651,6 +861,18 @@ function ChatTab({ snapshot, messages, onSendMessage, connected, isSidebar = fal
           <p className="page-kicker">Room {code}</p>
         </header>
       )}
+
+      {showBidBanner && (
+        <ChatBidBanner
+          snapshot={snapshot}
+          timer={timer}
+          connected={connected}
+          onBid={onBid}
+          onSkip={onSkip}
+          notify={notify}
+        />
+      )}
+
       <div className="chat-messages" role="log" aria-live="polite" aria-label="Chat messages">
         {messages.length === 0 ? (
           <p className="empty-state" style={{ textAlign: 'center', color: 'var(--ink-soft)', padding: '24px 0' }}>
@@ -811,6 +1033,11 @@ export default function Auction({
               messages={chatMessages}
               onSendMessage={onSendChatMessage}
               connected={connected}
+              timer={timer}
+              onBid={onBid}
+              onSkip={onSkip}
+              notify={notify}
+              showBidBanner={true}
             />
           );
         default:
