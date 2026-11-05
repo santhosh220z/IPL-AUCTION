@@ -232,6 +232,7 @@ export function registerSocketHandlers(io) {
   function attachAndAck(socket, room, team, ack, extra = {}) {
     attachSocket(socket, room, team);
     broadcastRoom(room);
+    socket.emit('chat:history', room.chatHistory ?? []);
     reply(ack, {
       ok: true,
       code: room.code,
